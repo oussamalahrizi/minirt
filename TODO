@@ -1,0 +1,78 @@
+raygen (per pixel) returns a color
+
+trace ray returns a payload
+
+miss returns a payload with invalid hitpoint so that we return a black color in perpixel
+
+closest hit returns a payload with the correct attributes of the payload
+
+struct payload
+{
+	double hitdistance;
+	vector 3 hitpoint (world position, also dont forget to add the sphere center position before returning this);
+	vector 3 normal (hitpoint normalized before adding the sphere center )
+	int object index : in case you have muliple object
+}
+
+struct sphere 
+{
+	position {x, y, z}
+	radius
+	color / albedo
+}
+
+perpixel function
+{
+	get the ray origin and ray direction;
+	call trace ray;
+	if (payload.hitdistance is negative which is the default value meaning we missed)
+	{
+		returns the default color (black)
+	}
+	else
+	{
+		get the light direction and calculate the intensity and then return the color of that pixel;
+	}
+}
+
+payload trace ray (takes in the ray as a parameter)
+{
+	int closest_sphere = -1; just a variable to store the closest sphere index;
+	loop through the objects on the scenes
+	{
+		calculate the delta and dont forget to substract the ray origin with the sphere center : oc = ray.origin - sphere.center;
+		if (delta < 0)
+			continue; 
+	}
+	else
+	{
+		get the solution : solution = (- (b / 2) - sqrt(delta)) / a;
+		if (solution < hitdistance)
+		{
+			first time wont matter but it does to assign the hitpoint of the closest sphere , gonna need it later
+			hitdistance = solution;
+			closest_sphere = i // set this variable to the nearest object index , in this case looping only trough spheres
+		}
+	}
+	// outside the loop
+	now if the closest_sphere is still < 0 meaning we didnt hit anything
+	we just return whatever miss function returns
+	return (miss(ray)) // also returns a payload
+
+	otherwise we have to calculate some stuff to fill our payload and that's our closest hit function job :
+	return (closest_hit(ray, hitdistance, closest_sphere)) // also returns a paylaod
+}
+
+payload closest_hit (ray, hitdistance, object_index)
+{
+	get the sphere object bases on the index given as parameter : object_index
+	now we have to do the calculation to fill the payload and that includes the lighting stuff and shit :
+	payload.hitdistance = hitdistance;
+	payload.object_index = object_index;
+
+}
+
+payload miss()
+{
+	just set the hitdistance of the payload that it returns to -1 so it's negative , that way the perpixel function knows that the color of the pixel is the default color aka black (definitely not racist tho)
+}
