@@ -39,14 +39,14 @@ typedef struct	s_color
 
 typedef struct	s_sphere
 {
-	t_vec3	center;
+	t_vec3	*center;
 	double	radius;
-	t_color	color;
+	t_color	*color;
 }				t_sphere;
 
 typedef struct	s_scene
 {
-	t_sphere	sphere;
+	t_sphere	*sphere;
 }				t_scene;
 
 typedef struct	s_data {
@@ -57,6 +57,20 @@ typedef struct	s_data {
 	int		endian;
 }				t_data;
 
+typedef struct s_camera
+{
+	t_vec3 *position;
+	t_vec3 *look_at;
+	t_vec3 *camera_up;
+	double camera_length;
+	double horizontal_size;
+	double aspectRatio;
+	t_vec3 *alignement_vec;
+	t_vec3 *u;
+	t_vec3 *v;
+	t_vec3 *screen_center;
+} t_camera;
+
 t_vec3 *new_vector3(double x, double y, double z);
 double dot_product(t_vec3 *v1, t_vec3 *v2);
 t_vec3 *cross(t_vec3 *v1, t_vec3 *v2);
@@ -66,8 +80,13 @@ double length(t_vec3 *vector);
 double length2(t_vec3 *vector);
 t_vec3	*vec3_div_number(t_vec3 *vec1, int n);
 t_vec3	*vec3_sub(t_vec3 *vec1, t_vec3 *vec2);
+t_vec3	*vec3_add(t_vec3 *vec1, t_vec3 *vec2);
 t_vec3 *negative_vec3(t_vec3 *vector);
 double max(double v1, double v2);
 t_vec3 *multiply_vec3_number(t_vec3 *vector, double number);
+void initialize_camera(t_camera *camera);
+t_ray *generate_ray(double x, double y, t_camera *camera);
+void update_camera(t_camera *camera);
+void print_vector(t_vec3 *vec);
 
 #endif

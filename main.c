@@ -17,89 +17,87 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, t_color color)
 	*(unsigned int*)dst = rgbToInteger(color);
 }
 
-void		ray_intersects_sphere(double radius, t_ray *ray, t_sphere sphere, t_color *pixe_color)
-{
-	// t_vec3 *lightdir = new_vector3(-40.0,50.0,0.0);
-	t_vec3 *lightdir = new_vector3(-1, -1, -1);
-	double a;
-	double b;
-	double c;
-	double delta;
-	double solution;
-	// t_vec3 *sphere_pos = new_vector3(sphere.center.x * 2 -1, sphere.center.y * 2 -1, sphere.center.z * 2 -1);
-	t_vec3 *oc = vec3_sub(ray->origin, &sphere.center);
-	// set quadtratic formula parameters
-	a = dot_product(ray->direction, ray->direction);
-	b = 2 * dot_product(oc, ray->direction);
-	c = dot_product(oc, oc) - (radius * radius);
-	// calculate delta
-	delta = (b * b) - (4 * a * c);
-	if (delta >= 0)
-	{
-		// we take the smallest solution because it's the first hitpoint since we cant see from our pov the other hitpoint
-		solution = (-(b / 2) - sqrt(delta)) / a;
-		t_vec3 *hitposition = malloc(sizeof(t_vec3));
-		hitposition->x = oc->x + (ray->direction->x * solution);
-		hitposition->y = oc->y +( ray->direction->y * solution);
-		hitposition->z = oc->z + (ray->direction->z * solution);
-		t_vec3 *normal = normalized(hitposition);
-		lightdir = normalized(lightdir);
-		double d = max(dot_product(normal, negative_vec3(lightdir)), 0);
-		t_vec3 *sphere_color = new_vector3((double)sphere.color.red / 255, (double)sphere.color.green / 255, (double)sphere.color.blue / 255);
-		t_vec3 *multi = multiply_vec3_number(sphere_color, d);
-		pixe_color->red = (int)(multi->x * 255 + 0.5);
-		pixe_color->green = (int)(multi->y * 255 + 0.5);
-		pixe_color->blue = (int)(multi->z * 255 + 0.5);
-	} 
-}
+// void		ray_intersects_sphere(double radius, t_ray *ray, t_sphere sphere, t_color *pixe_color)
+// {
+// 	// t_vec3 *lightdir = new_vector3(-40.0,50.0,0.0);
+// 	t_vec3 *lightdir = new_vector3(-1, -1, -1);
+// 	double a;
+// 	double b;
+// 	double c;
+// 	double delta;
+// 	double solution;
+// 	// t_vec3 *sphere_pos = new_vector3(sphere.center.x * 2 -1, sphere.center.y * 2 -1, sphere.center.z * 2 -1);
+// 	t_vec3 *oc = vec3_sub(ray->origin, &sphere.center);
+// 	// set quadtratic formula parameters
+// 	a = dot_product(ray->direction, ray->direction);
+// 	b = 2 * dot_product(oc, ray->direction);
+// 	c = dot_product(oc, oc) - (radius * radius);
+// 	// calculate delta
+// 	delta = (b * b) - (4 * a * c);
+// 	if (delta >= 0)
+// 	{
+// 		// we take the smallest solution because it's the first hitpoint since we cant see from our pov the other hitpoint
+// 		solution = (-(b / 2) - sqrt(delta)) / a;
+// 		t_vec3 *hitposition = malloc(sizeof(t_vec3));
+// 		hitposition->x = oc->x + (ray->direction->x * solution);
+// 		hitposition->y = oc->y +( ray->direction->y * solution);
+// 		hitposition->z = oc->z + (ray->direction->z * solution);
+// 		t_vec3 *normal = normalized(hitposition);
+// 		lightdir = normalized(lightdir);
+// 		double d = max(dot_product(normal, negative_vec3(lightdir)), 0);
+// 		t_vec3 *sphere_color = new_vector3((double)sphere.color.red / 255, (double)sphere.color.green / 255, (double)sphere.color.blue / 255);
+// 		t_vec3 *multi = multiply_vec3_number(sphere_color, d);
+// 		pixe_color->red = (int)(multi->x * 255 + 0.5);
+// 		pixe_color->green = (int)(multi->y * 255 + 0.5);
+// 		pixe_color->blue = (int)(multi->z * 255 + 0.5);
+// 	} 
+// }
 
-t_color	trace_ray(t_ray *ray, t_scene scene)
-{
-	t_color	background_color;
-	t_color	pixel_color;
+// t_color	trace_ray(t_ray *ray, t_scene scene)
+// {
+// 	t_color	background_color;
+// 	t_color	pixel_color;
 
-	background_color = (t_color){0, 0, 0}; // Background color (black)
-	pixel_color = background_color;
-	ray_intersects_sphere(scene.sphere.radius , ray, scene.sphere, &pixel_color);
-	return (pixel_color);
-}
+// 	background_color = (t_color){0, 0, 0}; // Background color (black)
+// 	pixel_color = background_color;
+// 	ray_intersects_sphere(scene.sphere.radius , ray, scene.sphere, &pixel_color);
+// 	return (pixel_color);
+// }
 
 
-void	render_image(t_scene scene, void *mlx_ptr, void *win_ptr, t_data *data)
-{
-	int		x;
-	int		y;
-	t_ray	*ray;
-	t_color	pixel_color;
-	t_vec2 coord;
+// void	render_image(t_scene scene, void *mlx_ptr, void *win_ptr, t_data *data)
+// {
+// 	int		x;
+// 	int		y;
+// 	t_ray	*ray;
+// 	t_color	pixel_color;
+// 	t_vec2 coord;
 
-	ray = malloc(sizeof(t_ray));
-	ray->origin = new_vector3(0 , 0 , -1);
-	// ray->origin = new_vector3(ray->origin->x * 2 - 1, ray->origin->y * 2 - 1, ray->origin->z * 2 - 1);
-	y = 0;
-	while (y < HEIGHT)
-	{
-		x = 0;
-		while (x < WIDTH)
-		{
-			// this calculations to make the ray hit the center of the pixel 
-			coord.x = (double) x / WIDTH;
-			coord.y = (double) y / HEIGHT;
-			coord.x = coord.x * 2 - 1;
-			coord.y = coord.y * 2 - 1;
-			// coord.x = (double)x / (double)(WIDTH - 1);
-            // coord.y = (double)y / (double)(HEIGHT - 1);
-			ray->direction = new_vector3(coord.x, coord.y, -1); // orientation vector , look subject
-			// i dont normalize cuz it affets performance hehe 
-			pixel_color = trace_ray(ray, scene);
-			// put_pixel_to_image(data->img, x, y, pixel_color);
-			my_mlx_pixel_put(data, x, y, pixel_color);
-			x++;
-		}
-		y++;
-	}
-	mlx_put_image_to_window(mlx_ptr, win_ptr, data->img, 0, 0);
-}
+// 	ray = malloc(sizeof(t_ray));
+// 	ray->origin = new_vector3(-50.0, 0, 20);
+
+// 	// ray->origin = new_vector3(ray->origin->x * 2 - 1, ray->origin->y * 2 - 1, ray->origin->z * 2 - 1);
+// 	y = 0;
+// 	while (y < HEIGHT)
+// 	{
+// 		x = 0;
+// 		while (x < WIDTH)
+// 		{
+// 			coord.x = (double) x / WIDTH;
+// 			coord.y = (double) y / HEIGHT;
+// 			coord.x = coord.x * 2 - 1;
+// 			coord.y = coord.y * 2 - 1;
+// 			ray->direction = new_vector3(coord.x, coord.y, -1); // orientation vector , look subject
+// 			// i dont normalize cuz it affets performance hehe 
+// 			pixel_color = trace_ray(ray, scene);
+// 			// put_pixel_to_image(data->img, x, y, pixel_color);
+// 			my_mlx_pixel_put(data, x, y, pixel_color);
+// 			x++;
+// 		}
+// 		y++;
+// 	}
+// 	mlx_put_image_to_window(mlx_ptr, win_ptr, data->img, 0, 0);
+// }
 
 int		main(void)
 {
@@ -108,16 +106,22 @@ int		main(void)
 	void	*img_ptr;
 	t_data	img;
 	t_scene	scene;
+	t_camera *camera;
 
 	mlx_ptr = mlx_init();
 	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
 	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,&img.endian);
-	scene.sphere.center = (t_vec3){0, 0, 0}; // Sphere position
-	scene.sphere.radius = 0.5; // Sphere radius
-	scene.sphere.color = (t_color){255,0,255}; // Sphere color according to subject
-	render_image(scene, mlx_ptr, win_ptr, &img);
-	mlx_loop(mlx_ptr);
+	camera = malloc(sizeof(t_camera));
+	initialize_camera(camera);
+	update_camera(camera);
+	printf("camera screen center :\n");
+	print_vector(camera->screen_center);
+	printf("camera U vector:\n");
+	print_vector(camera->u);
+	printf("camera V vector :\n");
+	print_vector(camera->v);
+	// mlx_loop(mlx_ptr);
 	return (0);
 }
 

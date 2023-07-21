@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 09:04:10 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/07/19 11:28:33 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/07/21 11:40:31 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,36 @@ t_vec3	*vec3_sub(t_vec3 *vec1, t_vec3 *vec2)
 	return (result);
 }
 
+t_vec3	*vec3_add(t_vec3 *vec1, t_vec3 *vec2)
+{
+	t_vec3	*result;
+
+	result = malloc(sizeof(t_vec3));
+	result->x = vec1->x + vec2->x;
+	result->y = vec1->y + vec2->y;
+	result->z = vec1->z + vec2->z;
+	return (result);
+}
+
+t_vec3	*vec3_multiply(t_vec3 *vec1, t_vec3 *vec2)
+{
+	t_vec3	*result;
+
+	result = malloc(sizeof(t_vec3));
+	result->x = vec1->x + vec2->x;
+	result->y = vec1->y + vec2->y;
+	result->z = vec1->z + vec2->z;
+	return (result);
+}
+
 t_vec3	*vec3_div_number(t_vec3 *vec1, int n)
 {
 	t_vec3	*result;
 
 	result = malloc(sizeof(t_vec3));
-	result->x = vec1->x / 2;
-	result->y = vec1->y / 2;
-	result->z = vec1->z / 2;
+	result->x = vec1->x / n;
+	result->y = vec1->y / n;
+	result->z = vec1->z / n;
 	return (result);
 }
 
@@ -121,4 +143,11 @@ t_vec3 *multiply_vec3_number(t_vec3 *vector, double number)
 	new->y = vector->y * number;
 	new->z = vector->z * number;
 	return (new);
+}
+
+void print_vector(t_vec3 *vec)
+{
+	printf("x : %.1f\n", vec->x);
+	printf("y : %.1f\n", vec->y);
+	printf("z : %.1f\n", vec->z);
 }
