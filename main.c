@@ -103,9 +103,8 @@ int		main(void)
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
-	void	*img_ptr;
 	t_data	img;
-	t_scene	scene;
+	// t_scene	scene;
 	t_camera *camera;
 
 	mlx_ptr = mlx_init();
@@ -121,7 +120,49 @@ int		main(void)
 	print_vector(camera->u);
 	printf("camera V vector :\n");
 	print_vector(camera->v);
-	// mlx_loop(mlx_ptr);
+	t_light *light = malloc(sizeof(t_light));
+	light->position = new_vector3(5, -10, -5);
+	light->color = (t_color) {255, 255, 255};
+	light->intensity = 1;
+	t_color sphere_color = (t_color) {10,0,255};
+	t_color black_color = (t_color) {0,0,0};
+	t_vec3 *hitposition = NULL;
+	int y = 0;
+	int x;
+	t_vec3 coord;
+	while (y < HEIGHT)
+	{
+		x = 0;
+		while (x < WIDTH)
+		{
+			coord.x = ((double)x / (double) WIDTH ) * 2 - 1;
+			coord.y = ((double)y / (double) HEIGHT ) * 2 - 1;
+			t_ray *ray = generate_ray(coord.x, coord.y, camera);
+			if (intersect_sphere(ray, &hitposition))
+			{
+				//compute the intensity
+				double intensity;
+				t_color color;
+				int validillum;
+				validillum = compute_illumination(light, hitposition, &color, &intensity);
+				if (validillum)
+				{
+					sphere_color.red = intensity * 255;
+					sphere_color.blue = 0;
+					sphere_color.green = 0;
+					my_mlx_pixel_put(&img, x, y, sphere_color);
+				}
+				else
+					my_mlx_pixel_put(&img, x, y, black_color);
+			}
+			else
+				my_mlx_pixel_put(&img, x, y, black_color);
+			x++;
+		}
+		y++;
+	}
+	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img, 0, 0);
+	mlx_loop(mlx_ptr);
 	return (0);
 }
 

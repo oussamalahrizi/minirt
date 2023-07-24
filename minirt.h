@@ -8,9 +8,10 @@
 #include <math.h>
 #include <stdio.h>
 
-#define WIDTH 800
-#define HEIGHT 800
-
+# define WIDTH 1280
+# define HEIGHT 720
+# define FOV 70
+# define HALFPI 1.5708
 typedef struct	s_vec3
 {
 	double	x;
@@ -71,6 +72,13 @@ typedef struct s_camera
 	t_vec3 *screen_center;
 } t_camera;
 
+typedef struct s_light
+{
+	t_color color;
+	double intensity;
+	t_vec3 *position;
+}	t_light;
+
 t_vec3 *new_vector3(double x, double y, double z);
 double dot_product(t_vec3 *v1, t_vec3 *v2);
 t_vec3 *cross(t_vec3 *v1, t_vec3 *v2);
@@ -88,5 +96,6 @@ void initialize_camera(t_camera *camera);
 t_ray *generate_ray(double x, double y, t_camera *camera);
 void update_camera(t_camera *camera);
 void print_vector(t_vec3 *vec);
-
+int intersect_sphere(t_ray *ray, t_vec3 **hitposition);
+int compute_illumination(t_light *light, t_vec3 *hitpoint, t_color *color, double *intensity);
 #endif
