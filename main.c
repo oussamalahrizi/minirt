@@ -147,9 +147,7 @@ int		main(void)
 				validillum = compute_illumination(light, hitposition, &color, &intensity);
 				if (validillum)
 				{
-					sphere_color.red = intensity * 255;
-					sphere_color.blue = 0;
-					sphere_color.green = 0;
+					sphere_color.red = intensity * sphere_color.red;
 					my_mlx_pixel_put(&img, x, y, sphere_color);
 				}
 				else

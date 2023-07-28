@@ -6,7 +6,6 @@ int intersect_sphere(t_ray *ray, t_vec3 **hitposition)
 	t_vec3 *ray_dir_normal = normalized(ray->direction);
 	// Apply               To Transfer the ray from Original Cordinat System to the sphere's Local Cordinats System
 	// GTFM Geometric Transform
-	// a is always 1 for some fkn reason
 	double s1;
 	double s2;
 	double radius = 1;

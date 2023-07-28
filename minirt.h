@@ -12,6 +12,14 @@
 # define HEIGHT 720
 # define FOV 70
 # define HALFPI 1.5708
+
+typedef struct s_matrix
+{
+	int rows;
+	int cols;
+	double **data;
+}	t_matrix;
+
 typedef struct	s_vec3
 {
 	double	x;

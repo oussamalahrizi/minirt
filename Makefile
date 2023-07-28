@@ -2,9 +2,10 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCS = 	main.c \
-		vector_utils.c \
+		vectors_utils.c \
 		Sphere.c \
-		camera.c
+		camera.c \
+		light.c
 	
 OBJS = ${SRCS:.c=.o}
 
@@ -16,13 +17,13 @@ all : ${NAME}
 	@$(CC) ${CFLAGS} -Imlx -c $< -o $@
 
 ${NAME} : ${OBJS}
-	@$(CC) $(OBJS) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+	@$(CC) $(OBJS) -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
 clean :
-	rm -rf ${OBJS}
+	@rm -rf ${OBJS}
 
 fclean : clean
-	rm -rf ${NAME}
+	@rm -rf ${NAME}
 
 re : fclean all
 
