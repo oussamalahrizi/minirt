@@ -1,6 +1,6 @@
 #include "minirt.h"
 
-int compute_illumination(t_light *light, t_vec3 *hitpoint, t_color *color, double *intensity)
+int compute_illumination(t_light *light, t_vec3 *hitpoint, t_vec3 *color, double *intensity)
 {
 	// lightdir is the vector pointing from the intersection to the light position
 	t_vec3 *lightdir = vec3_sub(light->position, hitpoint);
@@ -13,12 +13,12 @@ int compute_illumination(t_light *light, t_vec3 *hitpoint, t_color *color, doubl
 
 	if (angle > HALFPI)
 	{
-		color = &(light->color);
+		copy_vector_values(color, light->color);
 		*intensity = 0;
 		return (0);
 	}
 	// in case we have illumination
-	color = &(light->color);
+	copy_vector_values(color, light->color);
 	*intensity = light->intensity * (1 - (double)(angle / (double)HALFPI));
 	return (1);
 }

@@ -30,18 +30,17 @@ t_ray *generate_ray(double x, double y, t_camera *camera)
 	t_vec3 *world_part1 = vec3_add(camera->screen_center, multiply_vec3_number(camera->u, x));
 	// screen_worldcoord = world_part1 + (camera->v * y)
 	t_vec3 *world_coord = vec3_add(world_part1, multiply_vec3_number(camera->v, y));
-	t_ray *ray = malloc(sizeof(t_ray));
-	ray->origin = new_vector3(camera->position->x, camera->position->y, camera->position->z);
-	ray->direction = vec3_sub(world_coord, camera->position);
+	t_ray *ray = new_ray(camera->position, world_coord);
 	return (ray);
 }
 
 void initialize_camera(t_camera *camera)
 {
-	camera->position = new_vector3(0, -10, 0);
-	camera->look_at = new_vector3(0, 0, 0); // 0, 0, 1 : according to the subject
+	camera->position = new_vector3(0, -10, -2);
+	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
 	camera->camera_length = 1;
-	camera->horizontal_size = 0.25; // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
-	camera->aspectRatio = (double)WIDTH / (double)HEIGHT; //
+	double rad_fov = FOV * (M_PI / 180.0);
+	camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
+	camera->aspectRatio = 16.0 / 9.0; // make sure the screen size matches the aspect ratio
 }

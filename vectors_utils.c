@@ -58,7 +58,7 @@ t_vec3 *cross(t_vec3 *v1, t_vec3 *v2)
 
 double dot_product(t_vec3 *v1, t_vec3 *v2)
 {
-	return (v1->x * v2->x + v1->y * v2->y + v1->z * v2->z);
+	return ( (v1->x * v2->x) + (v1->y * v2->y) + (v1->z * v2->z) );
 }
 
 t_vec3 *new_vector3(double x, double y, double z)
@@ -147,7 +147,19 @@ t_vec3 *multiply_vec3_number(t_vec3 *vector, double number)
 
 void print_vector(t_vec3 *vec)
 {
-	printf("x : %.1f\n", vec->x);
-	printf("y : %.1f\n", vec->y);
-	printf("z : %.1f\n", vec->z);
+	printf("x : %f\t", vec->x);
+	printf("y : %f\t", vec->y);
+	printf("z : %f\n", vec->z);
+}
+
+t_vec3 *copy_vector(t_vec3 *vec)
+{
+	return (new_vector3(vec->x, vec->y, vec->z));
+}
+
+void copy_vector_values(t_vec3 *vec1, t_vec3 *vec2)
+{
+	vec1->x = vec2->x;
+	vec1->y = vec2->y;
+	vec1->z = vec2->z;
 }
