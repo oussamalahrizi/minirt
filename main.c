@@ -19,6 +19,7 @@ int		main(void)
 	t_data	img;
 	// t_scene	scene;
 	t_camera *camera;
+	t_image *image = new_image();
 
 	mlx_ptr = mlx_init();
 	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
@@ -27,16 +28,8 @@ int		main(void)
 	camera = malloc(sizeof(t_camera));
 	initialize_camera(camera);
 	update_camera(camera);
-	printf("camera screen center :\n");
-	print_vector(camera->screen_center);
-	printf("camera U vector:\n");
-	print_vector(camera->u);
-	printf("camera V vector :\n");
-	print_vector(camera->v);
-	t_light *light = malloc(sizeof(t_light));
-	light->position = new_vector3(5, -10, -5);
-	light->color = new_vector3(255, 255, 255);
-	light->intensity = 1;
+	t_light *light_list = init_light();
+	t_object *objects = init_objects();
 	t_vec3 *hitposition = new_vector3(0,0,0);
 	t_vec3 *localnormal = new_vector3(0,0,0);
 	t_vec3 *localcolor = new_vector3(0,0,0);
@@ -51,27 +44,37 @@ int		main(void)
 			coord.x = ((double)x / (double) WIDTH ) * 2 - 1;
 			coord.y = ((double)y / (double) HEIGHT ) * 2 - 1;
 			t_ray *ray = generate_ray(coord.x, coord.y, camera);
-			if (intersect_sphere(ray, hitposition, localnormal, localcolor))
+			int i = 0;
+			int intfound = 0;
+			while (i < 2)
 			{
-				//compute the intensity
+				if (objects[i].type == PLANE && test_intersect_plane(ray, objects[i].gtfm, hitposition,
+					localnormal, localcolor))
+					intfound = 1;
+				else if (objects[i].type == SPHERE && intersect_sphere(ray, objects[i].gtfm,
+					hitposition, localnormal, localcolor))
+					intfound = 1;
+				i++;
+			}
+			if (intfound)
+			{
 				double intensity;
-				t_vec3 color;
+				t_vec3 *color = new_vector3(0.0, 0.0, 0.0);
 				int validillum;
-				validillum = compute_illumination(light, hitposition, &color, &intensity);
+				validillum = compute_illumination(light_list, hitposition, color, &intensity);
 				if (validillum)
 				{
-					t_vec3 *sphere = new_vector3(10, 0, 255);
-					sphere->x = intensity * sphere->x;
-					sphere->y = intensity * sphere->y;
-					sphere->z = intensity * sphere->z;
-					my_mlx_pixel_put(&img, x, y, sphere);
+					t_vec3 *temp = multiply_vec3_number(objects[1].base_color, intensity);
+					set_pixel(image, temp, x, y);
+					free(temp);
 				}
 			}
 			x++;
 		}
 		y++;
 	}
-	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img, 0, 0);
+	render(image, mlx_ptr, win_ptr);
+	printf("done\n");
 	mlx_loop(mlx_ptr);
 	return (0);
 }

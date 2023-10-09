@@ -1,12 +1,18 @@
 CC = cc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra 
 
 SRCS = 	main.c \
 		vectors_utils.c \
 		Sphere.c \
 		camera.c \
 		light.c \
-		ray.c
+		ray.c \
+		image.c\
+		image_utils.c\
+		Gtform.c \
+		init.c \
+		matrix.c \
+		Plane.c 
 	
 OBJS = ${SRCS:.c=.o}
 
@@ -15,10 +21,10 @@ NAME = minirt
 all : ${NAME}
 
 %.o : %.c
-	@$(CC) ${CFLAGS} -I/usr/include -Imlx_linux -O3 -c $< -o $@
+	@$(CC) ${CFLAGS} -fsanitize=address -g3 -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
 ${NAME} : ${OBJS}
-	@$(CC) $(OBJS) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	@$(CC) $(OBJS) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean :
 	@rm -rf ${OBJS}

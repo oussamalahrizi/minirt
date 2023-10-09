@@ -88,6 +88,24 @@ typedef struct s_light
 	t_vec3 *position;
 }	t_light;
 
+typedef struct s_object
+{
+	int type;
+	int has_material;
+	t_vec3 *base_color;
+	t_vec3 *mat_color;
+	t_vec3 *translation;
+	t_vec3 *rotation;
+	t_vec3 *scale;
+	t_matrix **gtfm;
+	double shininess;
+	double reflectivity;
+	
+}	t_object;
+
+# define SPHERE 1
+# define PLANE 2
+# define EPSILON 1e-21f
 t_vec3 *new_vector3(double x, double y, double z);
 double dot_product(t_vec3 *v1, t_vec3 *v2);
 t_vec3 *cross(t_vec3 *v1, t_vec3 *v2);
@@ -105,7 +123,7 @@ void initialize_camera(t_camera *camera);
 t_ray *generate_ray(double x, double y, t_camera *camera);
 void update_camera(t_camera *camera);
 void print_vector(t_vec3 *vec);
-int intersect_sphere(t_ray *ray, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor);
+int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor);
 int compute_illumination(t_light *light, t_vec3 *hitpoint, t_vec3 *color, double *intensity);
 t_vec3 *copy_vector(t_vec3 *vec);
 t_ray *new_ray(t_vec3 *point1, t_vec3 *point2);
@@ -122,4 +140,14 @@ double max_overall(t_image *image);
 void my_mlx_put_pixel(t_data *img, int x, int y, int color);
 int rgb_to_int(double red, double green, double blue, double max);
 void render(t_image *image, void *mlx, void *win);
+t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale);
+t_vec3 *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices);
+t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices);
+t_object* init_objects();
+t_light *init_light();
+int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor);
+void set_pixel(t_image *image, t_vec3 *color, int x, int y);
+t_image *new_image();
+
+
 #endif
