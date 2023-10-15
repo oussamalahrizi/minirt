@@ -216,19 +216,36 @@ t_matrix *matrix_multiply(const t_matrix *a, const t_matrix *b)
 	int k ;
 	while (i < a->rows)
 	{
-		j = 0;
-		while (j < b->cols)
+		k = 0;
+		while (k < b->cols)
 		{
-			result->data[i][j] = 0.0;
-			k = 0;
-			while (k < a->cols)
+			j = 0;
+			while (j < a->cols)
 			{
-				result->data[i][j] += a->data[i][k] * b->data[k][j];
-				k++;
+				result->data[i][k] += (a->data[i][j] * b->data[j][k]);
+				j++;
 			}
-			j++;
+			k++;
 		}
 		i++;
 	}
     return result;
+}
+
+void copy_matrix(t_matrix *m1, t_matrix *m2)
+{
+	int x;
+	int y;
+
+	x = 0;
+	while (x < m2->rows)
+	{
+		y = 0;
+		while (y < m2->cols)
+		{
+			m1->data[x][y] = m2->data[x][y];
+			y++;
+		}
+		x++;
+	}
 }

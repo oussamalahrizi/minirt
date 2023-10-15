@@ -90,6 +90,7 @@ typedef struct s_light
 
 typedef struct s_object
 {
+	int id;
 	int type;
 	int has_material;
 	t_vec3 *base_color;
@@ -102,6 +103,14 @@ typedef struct s_object
 	double reflectivity;
 	
 }	t_object;
+
+typedef struct s_int_info
+{
+	t_object *closest_object;
+	t_vec3 *intpoint;
+	t_vec3 *localnormal;
+	t_vec3 *localcolor;
+}	t_int_info;
 
 # define SPHERE 1
 # define PLANE 2
@@ -123,8 +132,8 @@ void initialize_camera(t_camera *camera);
 t_ray *generate_ray(double x, double y, t_camera *camera);
 void update_camera(t_camera *camera);
 void print_vector(t_vec3 *vec);
-int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor);
-int compute_illumination(t_light *light, t_vec3 *hitpoint, t_vec3 *color, double *intensity);
+int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal);
+int compute_illumination(t_light *light, t_object *object_list, t_object *current_object, t_vec3 *hitpoint, t_vec3 *localnormal, t_vec3 *color, double *intensity);
 t_vec3 *copy_vector(t_vec3 *vec);
 t_ray *new_ray(t_vec3 *point1, t_vec3 *point2);
 void copy_vector_values(t_vec3 *vec1, t_vec3 *vec2);
@@ -141,13 +150,14 @@ void my_mlx_put_pixel(t_data *img, int x, int y, int color);
 int rgb_to_int(double red, double green, double blue, double max);
 void render(t_image *image, void *mlx, void *win);
 t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale);
-t_vec3 *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices);
+t_ray *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices);
 t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices);
 t_object* init_objects();
 t_light *init_light();
-int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor);
+int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal);
 void set_pixel(t_image *image, t_vec3 *color, int x, int y);
 t_image *new_image();
-
+void copy_matrix(t_matrix *m1, t_matrix *m2);
+int test_intersection(t_ray *ray, t_object *objects, t_int_info *info);
 
 #endif

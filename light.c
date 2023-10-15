@@ -1,24 +1,53 @@
 #include "minirt.h"
 
-int compute_illumination(t_light *light, t_vec3 *hitpoint, t_vec3 *color, double *intensity)
+int compute_illumination(t_light *light, t_object *object_list, t_object *current_object, t_vec3 *hitpoint,
+	t_vec3 *localnormal, t_vec3 *color, double *intensity)
 {
 	// lightdir is the vector pointing from the intersection to the light position
 	t_vec3 *lightdir = vec3_sub(light->position, hitpoint);
 	lightdir = normalized(lightdir);
+	t_ray *ray = new_ray(hitpoint, vec3_add(hitpoint, lightdir));
 
-	// compute the angle between the normal of the sphere and the light ray
-	t_vec3 *hitpoint_normal = normalized(hitpoint);
-	double angle = acos(dot_product(hitpoint_normal, lightdir));
-	// if the normal is pointing away from the light then we have no illumination
-
-	if (angle > HALFPI)
+	int i = 0;
+	t_vec3 *intpoint = new_vector3(0,0,0);
+	t_vec3 *poinormal = new_vector3(0,0,0);
+	int validint = 0;
+	while (i < 2)
+	{
+		if (current_object->id != object_list[i].id)
+		{
+			if (object_list[i].type == SPHERE && 
+				intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal))
+				validint = 1;
+			else if (object_list[i].type == PLANE &&
+				test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal))
+				validint = 1;
+		}
+		if (validint)
+			break;
+		i++;
+	}
+	if (!validint)
+	{
+		double angle = acos(dot_product(localnormal, lightdir));
+		if (angle > HALFPI)
+		{
+			copy_vector_values(color, light->color);
+			*intensity = 0;
+			return (0);
+		}
+		else
+		{
+			copy_vector_values(color, light->color);
+			*intensity = light->intensity * (1 - (double)(angle / (double)HALFPI));
+			return (1);
+		}
+	}
+	else // shadow
 	{
 		copy_vector_values(color, light->color);
 		*intensity = 0;
 		return (0);
 	}
-	// in case we have illumination
-	copy_vector_values(color, light->color);
-	*intensity = light->intensity * (1 - (double)(angle / (double)HALFPI));
 	return (1);
 }

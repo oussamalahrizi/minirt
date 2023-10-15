@@ -6,7 +6,7 @@ int close_enough(double value)
     return (fabs(value) < EPSILON);
 }
 
-int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec3 *localcolor)
+int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal)
 {
     t_ray *back_ray = apply_to_ray(ray, BACKWARD, gtfm);
     t_vec3 *ray_dir = normalized(back_ray->direction);
@@ -38,13 +38,12 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 t_vec3 *normalvector = new_vector3(0.0, 0.0, -1.0);
                 t_vec3 *globalorigin = apply_to_vector(localorigin, FORWARD, gtfm);
                 temp = apply_to_vector(normalvector, FORWARD, gtfm);
+                temp = vec3_sub(temp, globalorigin);
                 temp = normalized(temp);
                 copy_vector_values(localnormal, temp);
                 free(temp);
-
                 // return base color
                 // copy_vector_values(localcolor, base_color);
-                (void) localcolor;
                 return (1);
             }
             return (0);

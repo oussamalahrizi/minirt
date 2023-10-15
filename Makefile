@@ -12,7 +12,8 @@ SRCS = 	main.c \
 		Gtform.c \
 		init.c \
 		matrix.c \
-		Plane.c 
+		Plane.c \
+		object.c
 	
 OBJS = ${SRCS:.c=.o}
 

@@ -40,7 +40,8 @@ void initialize_camera(t_camera *camera)
 	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
 	camera->camera_length = 1;
-	double rad_fov = FOV * (M_PI / 180.0);
-	camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
+	// double rad_fov = FOV * (M_PI / 180.0);
+	// camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
+	camera->horizontal_size = 0.25;
 	camera->aspectRatio = 16.0 / 9.0; // make sure the screen size matches the aspect ratio
 }

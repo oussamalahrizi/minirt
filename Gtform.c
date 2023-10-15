@@ -71,15 +71,9 @@ t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale)
     t_matrix *temp;
 
     forward = matrix_multiply(translation, scale_matrix);
-    temp = forward;
     forward = matrix_multiply(forward, rotation_x);
-    free_matrix(temp);
-    temp = forward;
     forward = matrix_multiply(forward, rotation_y);
-    free_matrix(temp);
-    temp = forward;
     forward = matrix_multiply(forward, rotation_z);
-    free_matrix(temp);
     backward = inverse(forward);
     t_matrix **gtform = malloc(sizeof(t_matrix *) * 2);
 
@@ -109,7 +103,6 @@ t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices)
         result_matrix = matrix_multiply(matrices[0], tempdata);
     else
         result_matrix = matrix_multiply(matrices[1], tempdata);
-
     t_vec3 *output_vec = new_vector3(result_matrix->data[0][0], result_matrix->data[1][0],
         result_matrix->data[2][0]);
     free_matrix(tempdata);
@@ -117,7 +110,7 @@ t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices)
     return (output_vec);
 }
 
-t_vec3 *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices)
+t_ray *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices)
 {
     t_ray *output_ray = malloc(sizeof(t_ray));
 

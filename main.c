@@ -20,7 +20,6 @@ int		main(void)
 	// t_scene	scene;
 	t_camera *camera;
 	t_image *image = new_image();
-
 	mlx_ptr = mlx_init();
 	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
 	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
@@ -30,43 +29,55 @@ int		main(void)
 	update_camera(camera);
 	t_light *light_list = init_light();
 	t_object *objects = init_objects();
-	t_vec3 *hitposition = new_vector3(0,0,0);
-	t_vec3 *localnormal = new_vector3(0,0,0);
-	t_vec3 *localcolor = new_vector3(0,0,0);
+	t_int_info *info = malloc(sizeof(t_int_info));
 	int y = 0;
 	int x;
 	t_vec3 coord;
 	while (y < HEIGHT)
 	{
 		x = 0;
+		printf("Processing line : %d", y + 1);
+		printf("\r");
+		fflush(stdout);
 		while (x < WIDTH)
 		{
 			coord.x = ((double)x / (double) WIDTH ) * 2 - 1;
 			coord.y = ((double)y / (double) HEIGHT ) * 2 - 1;
 			t_ray *ray = generate_ray(coord.x, coord.y, camera);
-			int i = 0;
-			int intfound = 0;
-			while (i < 2)
-			{
-				if (objects[i].type == PLANE && test_intersect_plane(ray, objects[i].gtfm, hitposition,
-					localnormal, localcolor))
-					intfound = 1;
-				else if (objects[i].type == SPHERE && intersect_sphere(ray, objects[i].gtfm,
-					hitposition, localnormal, localcolor))
-					intfound = 1;
-				i++;
-			}
+			int intfound = test_intersection(ray, objects, info);
 			if (intfound)
 			{
+				// set_pixel(image, info->closest_object->base_color, x, y);
 				double intensity;
 				t_vec3 *color = new_vector3(0.0, 0.0, 0.0);
-				int validillum;
-				validillum = compute_illumination(light_list, hitposition, color, &intensity);
-				if (validillum)
+				int validillum = 0;
+				int illumfound = 0;
+				double red = 0;
+				double green = 0;
+				double blue = 0;
+				int j = 0;
+				while (j < 3)
 				{
-					t_vec3 *temp = multiply_vec3_number(objects[1].base_color, intensity);
-					set_pixel(image, temp, x, y);
-					free(temp);
+					validillum = compute_illumination(&light_list[j], objects, info->closest_object,
+						info->intpoint,info->localnormal, color, &intensity);
+					if (validillum)
+					{
+						illumfound = 1;
+						red += color->x * intensity;
+						green += color->y * intensity;
+						blue += color->z * intensity;
+					}
+					j++;
+				}
+				if (illumfound)
+				{
+					red *= info->closest_object->base_color->x;
+					green *= info->closest_object->base_color->y;
+					blue *= info->closest_object->base_color->z;
+					color->x = red;
+					color->y = green;
+					color->z = blue;
+					set_pixel(image, color, x, y);
 				}
 			}
 			x++;
@@ -74,7 +85,7 @@ int		main(void)
 		y++;
 	}
 	render(image, mlx_ptr, win_ptr);
-	printf("done\n");
+	printf("\nDone\n");
 	mlx_loop(mlx_ptr);
 	return (0);
 }
