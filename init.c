@@ -4,7 +4,7 @@ t_object* init_objects()
 {
     t_object *objects;
 
-    objects = malloc(sizeof(t_object) * 2);
+    objects = malloc(sizeof(t_object) * 4);
     // plane
     objects[1].type = PLANE;
     objects[1].id = 1;
@@ -21,15 +21,39 @@ t_object* init_objects()
     // sphere
     objects[0].type = SPHERE;
     objects[0].id = 0;
-    objects[0].base_color = new_vector3(10.0, 0.0, 255.0);
+    objects[0].base_color = new_vector3(64, 128, 204);
     objects[0].mat_color = new_vector3(255.0, 0.0, 10.0);
-    objects[0].translation = new_vector3(0.0, 0.0, 0.0);
+    objects[0].translation = new_vector3(-1.5, 0.0, 0.0);
     objects[0].rotation = new_vector3(0.0, 0.0, 0.0);
     objects[0].scale = new_vector3(0.5, 0.5, 0.5);
     objects[0].has_material = 1;
     objects[0].shininess = 10.0;
     objects[0].reflectivity = 0.5;
     objects[0].gtfm = set_transform(objects[0].translation, objects[0].rotation, objects[0].scale);
+
+    objects[2].type = SPHERE;
+    objects[2].id = 2;
+    objects[2].base_color = new_vector3(10.0, 0.0, 255.0);
+    objects[2].mat_color = new_vector3(255.0, 0.0, 10.0);
+    objects[2].translation = new_vector3(1.5, 0.0, 0.0);
+    objects[2].rotation = new_vector3(0.0, 0.0, 0.0);
+    objects[2].scale = new_vector3(0.5, 0.5, 0.5);
+    objects[2].has_material = 1;
+    objects[2].shininess = 10.0;
+    objects[2].reflectivity = 0.5;
+    objects[2].gtfm = set_transform(objects[2].translation, objects[2].rotation, objects[2].scale);
+
+    objects[3].type = SPHERE;
+    objects[3].id = 3;
+    objects[3].base_color = new_vector3(10.0, 0.0, 255.0);
+    objects[3].mat_color = new_vector3(255.0, 0.0, 10.0);
+    objects[3].translation = new_vector3(0, 0.0, 0.0);
+    objects[3].rotation = new_vector3(0.0, 0.0, 0.0);
+    objects[3].scale = new_vector3(0.5, 0.5, 0.5);
+    objects[3].has_material = 1;
+    objects[3].shininess = 10.0;
+    objects[3].reflectivity = 0.5;
+    objects[3].gtfm = set_transform(objects[3].translation, objects[3].rotation, objects[3].scale);
     return (objects);
 }
 
@@ -39,15 +63,15 @@ t_light *init_light()
 
     light_list[0].color = new_vector3(255, 0, 0);
     light_list[0].position = new_vector3(5, -10, -5);
-    light_list[0].intensity = 0.8;
+    light_list[0].intensity = 1;
 
     light_list[1].color = new_vector3(0, 255, 0);
     light_list[1].position = new_vector3(0, -10, -5);
-    light_list[1].intensity = 0.8;
+    light_list[1].intensity = 1;
 
     light_list[2].color = new_vector3(0, 0, 255);
     light_list[2].position = new_vector3(-5, -10, -5);
-    light_list[2].intensity = 0.8;
+    light_list[2].intensity = 1;
 
     return (light_list);
 }

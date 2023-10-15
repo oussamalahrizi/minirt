@@ -70,6 +70,8 @@ t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale)
     t_matrix *backward;
     t_matrix *temp;
 
+    // forward = trans * scale  * rotationx * rotationy * rotationz
+    // backward =  inverse(forward)
     forward = matrix_multiply(translation, scale_matrix);
     forward = matrix_multiply(forward, rotation_x);
     forward = matrix_multiply(forward, rotation_y);
@@ -94,6 +96,11 @@ t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices)
     t_matrix *tempdata = new_matrix(4, 1);
     t_matrix *result_matrix;
 
+    // vec4 a b c 1.0  * matrix
+    // [a] * [] [] [] []
+    // [b] * [] [] [] []
+    // [c] * [] [] [] []
+    // [1.0] * [] [] [] []
     tempdata->data[0][0] = input_vec->x;
     tempdata->data[1][0] = input_vec->y;
     tempdata->data[2][0] = input_vec->z;

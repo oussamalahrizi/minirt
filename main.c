@@ -20,10 +20,7 @@ int		main(void)
 	// t_scene	scene;
 	t_camera *camera;
 	t_image *image = new_image();
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
-	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,&img.endian);
+	
 	camera = malloc(sizeof(t_camera));
 	initialize_camera(camera);
 	update_camera(camera);
@@ -36,8 +33,7 @@ int		main(void)
 	while (y < HEIGHT)
 	{
 		x = 0;
-		printf("Processing line : %d", y + 1);
-		printf("\r");
+		printf("Processing line : %d\n", y + 1);
 		fflush(stdout);
 		while (x < WIDTH)
 		{
@@ -47,36 +43,15 @@ int		main(void)
 			int intfound = test_intersection(ray, objects, info);
 			if (intfound)
 			{
-				// set_pixel(image, info->closest_object->base_color, x, y);
-				double intensity;
-				t_vec3 *color = new_vector3(0.0, 0.0, 0.0);
-				int validillum = 0;
-				int illumfound = 0;
-				double red = 0;
-				double green = 0;
-				double blue = 0;
-				int j = 0;
-				while (j < 3)
+				t_vec3 *color;
+				if (info->closest_object->has_material == 1)
 				{
-					validillum = compute_illumination(&light_list[j], objects, info->closest_object,
-						info->intpoint,info->localnormal, color, &intensity);
-					if (validillum)
-					{
-						illumfound = 1;
-						red += color->x * intensity;
-						green += color->y * intensity;
-						blue += color->z * intensity;
-					}
-					j++;
+					color = compute_color(objects, light_list, info, ray);
+					set_pixel(image, color, x, y);
 				}
-				if (illumfound)
+				else
 				{
-					red *= info->closest_object->base_color->x;
-					green *= info->closest_object->base_color->y;
-					blue *= info->closest_object->base_color->z;
-					color->x = red;
-					color->y = green;
-					color->z = blue;
+					color = diffuse_color(objects, light_list, info);
 					set_pixel(image, color, x, y);
 				}
 			}
@@ -84,6 +59,10 @@ int		main(void)
 		}
 		y++;
 	}
+	mlx_ptr = mlx_init();
+	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
+	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,&img.endian);
 	render(image, mlx_ptr, win_ptr);
 	printf("\nDone\n");
 	mlx_loop(mlx_ptr);

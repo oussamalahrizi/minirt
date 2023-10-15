@@ -27,9 +27,12 @@ double normalize(t_vec3 *vector)
 	double l;
 
 	l = length(vector);
-	vector->x /= l;
-	vector->y /= l;
-	vector->z /= l;
+	if (l != 0)
+	{
+		vector->x /= l;
+		vector->y /= l;
+		vector->z /= l;
+	}
 	return (l);
 }
 
@@ -56,6 +59,8 @@ t_vec3 *cross(t_vec3 *v1, t_vec3 *v2)
 	return (new_v);
 }
 
+
+// x, y, z a , b c == xa + yb + zc == cos theta 
 double dot_product(t_vec3 *v1, t_vec3 *v2)
 {
 	return ( (v1->x * v2->x) + (v1->y * v2->y) + (v1->z * v2->z) );

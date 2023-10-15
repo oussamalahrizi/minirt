@@ -12,7 +12,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	t_vec3 *intpoint = new_vector3(0,0,0);
 	t_vec3 *poinormal = new_vector3(0,0,0);
 	int validint = 0;
-	while (i < 2)
+	while (i < 4)
 	{
 		if (current_object->id != object_list[i].id)
 		{

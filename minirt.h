@@ -159,5 +159,6 @@ void set_pixel(t_image *image, t_vec3 *color, int x, int y);
 t_image *new_image();
 void copy_matrix(t_matrix *m1, t_matrix *m2);
 int test_intersection(t_ray *ray, t_object *objects, t_int_info *info);
-
+t_vec3 *compute_color(t_object *objects, t_light *lights, t_int_info *object_info, t_ray *camera_ray);
+t_vec3 *diffuse_color(t_object *objects, t_light *lights, t_int_info *object_info);
 #endif

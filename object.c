@@ -38,7 +38,7 @@ int test_intersection(t_ray *ray, t_object *objects, t_int_info *info)
     i = 0;
     validint = 0;
     mindist = -1;
-    while (i < 2)
+    while (i < 4)
     {
         if (objects[i].type == SPHERE && 
             intersect_sphere(ray, objects[i].gtfm, intpoint, localnormal))

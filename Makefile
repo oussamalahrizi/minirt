@@ -13,7 +13,8 @@ SRCS = 	main.c \
 		init.c \
 		matrix.c \
 		Plane.c \
-		object.c
+		object.c \
+		material.c
 	
 OBJS = ${SRCS:.c=.o}
 
