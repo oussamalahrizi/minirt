@@ -72,10 +72,10 @@ t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale)
 
     // forward = trans * scale  * rotationx * rotationy * rotationz
     // backward =  inverse(forward)
-    forward = matrix_multiply(translation, scale_matrix);
-    forward = matrix_multiply(forward, rotation_x);
+    forward = matrix_multiply(translation, rotation_x);
     forward = matrix_multiply(forward, rotation_y);
     forward = matrix_multiply(forward, rotation_z);
+    forward = matrix_multiply(forward, scale_matrix);
     backward = inverse(forward);
     t_matrix **gtform = malloc(sizeof(t_matrix *) * 2);
 
@@ -89,6 +89,56 @@ t_matrix **set_transform(t_vec3 *trans, t_vec3 *rotation, t_vec3 *scale)
     gtform[1] = backward;
 
     return (gtform);
+}
+
+t_matrix	*transpose(t_matrix *mt)
+{
+	t_matrix	*new_mt;
+	int			r_i;
+	int			c_i;
+
+	if (!mt)
+		return (NULL);
+	new_mt = new_matrix(mt->cols, mt->rows);
+	r_i = 0;
+	while (r_i < mt->rows)
+	{
+		c_i = 0;
+		while (c_i < mt->cols)
+		{
+			new_mt->data[c_i][r_i] = mt->data[r_i][c_i];
+			c_i++;
+		}
+		r_i++;
+	}
+	return (new_mt);
+}
+
+t_matrix	*set_lineartfm(t_matrix **gtfm)
+{
+	t_matrix	*tmp;
+	t_matrix	*inverse_tmp;
+	int			i;
+	int			j;
+
+	t_matrix *lin;
+	tmp = new_matrix(3, 3);
+	i = 0;
+	while (i < 3)
+	{
+		j = 0;
+		while (j < 3)
+		{
+			tmp->data[i][j] = gtfm[0]->data[i][j];
+			j++;
+		}
+		i++;
+	}
+	inverse_tmp = inverse(tmp);
+	lin = transpose(inverse_tmp);
+	free_matrix(tmp);
+	free_matrix(inverse_tmp);
+    return (lin);
 }
 
 t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices)
@@ -110,8 +160,7 @@ t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices)
         result_matrix = matrix_multiply(matrices[0], tempdata);
     else
         result_matrix = matrix_multiply(matrices[1], tempdata);
-    t_vec3 *output_vec = new_vector3(result_matrix->data[0][0], result_matrix->data[1][0],
-        result_matrix->data[2][0]);
+    t_vec3 *output_vec = new_vector3(result_matrix->data[0][0], result_matrix->data[1][0], result_matrix->data[2][0]);
     free_matrix(tempdata);
     free_matrix(result_matrix);
     return (output_vec);

@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra 
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS = 	main.c \
 		vectors_utils.c \
@@ -9,9 +9,14 @@ SRCS = 	main.c \
 		ray.c \
 		image.c\
 		image_utils.c\
-		Gtform.c \
 		init.c \
-		matrix.c \
+		Matrix/Init.c \
+		Matrix/Inverse.c \
+		Matrix/matrix.c \
+		Matrix/Minor.c \
+		Matrix/Multiplication.c \
+		Transformation/gtfm.c \
+		Transformation/TransformationMatrices.c \
 		Plane.c \
 		object.c \
 		material.c
@@ -23,10 +28,10 @@ NAME = minirt
 all : ${NAME}
 
 %.o : %.c
-	@$(CC) ${CFLAGS} -fsanitize=address -g3 -I/usr/include -Imlx_linux -O3 -c $< -o $@
+	@$(CC) ${CFLAGS}  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
 ${NAME} : ${OBJS}
-	@$(CC) $(OBJS) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	@$(CC) $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean :
 	@rm -rf ${OBJS}

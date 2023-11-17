@@ -4,13 +4,10 @@ void update_camera(t_camera *camera)
 {
 	// get the vector from the camera position to the camera look at
 	// this is the normal vector of the plan constructed by  the look at and the look up vectors
-	camera->alignement_vec = vec3_sub(camera->look_at, camera->position);
-	camera->alignement_vec = normalized(camera->alignement_vec);
+	camera->alignement_vec = normalized(vec3_sub(camera->look_at, camera->position));
 	// calculate the u and v vectors
-	camera->u = cross(camera->alignement_vec, camera->camera_up);
-	camera->u = normalized(camera->u);
-	camera->v = cross(camera->u, camera->alignement_vec);
-	camera->v = normalized(camera->v);
+	camera->u = normalized(cross(camera->alignement_vec, camera->camera_up));
+	camera->v = normalized(cross(camera->u, camera->alignement_vec));
 	// calculate the position of the center point of the screen
 	// still dont understand this
 	// camera screen center = camera position + (camera length * camera alignement vector) 
@@ -21,7 +18,7 @@ void update_camera(t_camera *camera)
 	//them based on the parmeters given in the subject such as aspect ratio and
 	//the horizontal size (fov / 180)
 	camera->u = multiply_vec3_number(camera->u , camera->horizontal_size);
-	camera->v = multiply_vec3_number(camera->v, (double) camera->horizontal_size / camera->aspectRatio);
+	camera->v = multiply_vec3_number(camera->v, (camera->horizontal_size / (double) camera->aspectRatio));
 }
 
 t_ray *generate_ray(double x, double y, t_camera *camera)
@@ -36,12 +33,12 @@ t_ray *generate_ray(double x, double y, t_camera *camera)
 
 void initialize_camera(t_camera *camera)
 {
-	camera->position = new_vector3(0, -10, -2);
+	camera->position = new_vector3(0.0, -10.0, -2.0);
 	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
-	camera->camera_length = 1;
-	// double rad_fov = FOV * (M_PI / 180.0);
-	// camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
-	camera->horizontal_size = 0.25;
+	camera->camera_length = 1.0;
+	double rad_fov = FOV * (M_PI / 180.0);
+	camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
+	// camera->horizontal_size = 0.25;
 	camera->aspectRatio = 16.0 / 9.0; // make sure the screen size matches the aspect ratio
 }

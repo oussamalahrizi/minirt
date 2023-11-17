@@ -4,8 +4,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	t_vec3 *localnormal, t_vec3 *color, double *intensity)
 {
 	// lightdir is the vector pointing from the intersection to the light position
-	t_vec3 *lightdir = vec3_sub(light->position, hitpoint);
-	lightdir = normalized(lightdir);
+	t_vec3 *lightdir = normalized(vec3_sub(light->position, hitpoint));
 	t_ray *ray = new_ray(hitpoint, vec3_add(hitpoint, lightdir));
 
 	int i = 0;
@@ -14,14 +13,12 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	int validint = 0;
 	while (i < 4)
 	{
-		if (current_object->id != object_list[i].id)
+		if (current_object != &object_list[i])
 		{
-			if (object_list[i].type == SPHERE && 
-				intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal))
-				validint = 1;
-			else if (object_list[i].type == PLANE &&
-				test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal))
-				validint = 1;
+			if (object_list[i].type == SPHERE)
+				validint =  intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal);
+			else if (object_list[i].type == PLANE)
+				validint = test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal);
 		}
 		if (validint)
 			break;
@@ -30,24 +27,27 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	if (!validint)
 	{
 		double angle = acos(dot_product(localnormal, lightdir));
-		if (angle > HALFPI)
+		if (angle > 1.5708)
 		{
+			// angle too big
 			copy_vector_values(color, light->color);
-			*intensity = 0;
+			*intensity = 0.0;
 			return (0);
 		}
 		else
 		{
+			// there is illumination
 			copy_vector_values(color, light->color);
-			*intensity = light->intensity * (1 - (double)(angle / (double)HALFPI));
+
+			*intensity = light->intensity * (1 - (angle / 1.5708));
 			return (1);
 		}
 	}
 	else // shadow
 	{
 		copy_vector_values(color, light->color);
-		*intensity = 0;
+		*intensity = 0.0;
 		return (0);
 	}
-	return (1);
+	return (0);
 }

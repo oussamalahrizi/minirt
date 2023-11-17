@@ -6,9 +6,8 @@ double **make_channel()
 
     int i;
 
-    i = 0;
     new = malloc(sizeof(double *) * HEIGHT);
-
+    i = 0;
     while (i < HEIGHT)
     {
         new[i] = malloc(sizeof(double) * WIDTH);

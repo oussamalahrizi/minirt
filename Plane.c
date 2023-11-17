@@ -8,7 +8,7 @@ int close_enough(double value)
 
 int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal)
 {
-    t_ray *back_ray = apply_to_ray(ray, BACKWARD, gtfm);
+    t_ray *back_ray = apply_transform(ray,  gtfm, BACKWARD);
     t_vec3 *ray_dir = normalized(back_ray->direction);
     if (!close_enough(ray_dir->z))
     {
@@ -30,14 +30,14 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 // point of intersection
                 t_vec3 *intpoint = vec3_add(back_ray->point1, multiply_vec3_number(ray_dir, t));
                 // transform back the vector to original world
-                t_vec3 *temp = apply_to_vector(intpoint, FORWARD, gtfm);
+                t_vec3 *temp = apply_transform_vector(intpoint, FORWARD, gtfm);
                 copy_vector_values(hitposition, temp);
                 free(temp);
                 // Compute the local normal.
                 t_vec3 *localorigin = new_vector3(0.0, 0.0, 0.0);
                 t_vec3 *normalvector = new_vector3(0.0, 0.0, -1.0);
-                t_vec3 *globalorigin = apply_to_vector(localorigin, FORWARD, gtfm);
-                temp = apply_to_vector(normalvector, FORWARD, gtfm);
+                t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
+                temp = apply_transform_vector(normalvector, FORWARD, gtfm);
                 temp = vec3_sub(temp, globalorigin);
                 temp = normalized(temp);
                 copy_vector_values(localnormal, temp);

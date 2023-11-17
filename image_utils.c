@@ -10,7 +10,7 @@ int rgb_to_int(double red, double green, double blue, double max)
     r = (red / max) * 255;
     g = (green / max) * 255;
     b = (blue / max) * 255;
-    result = (r << 16) | (g << 8) | b;
+    result = (r << 16) + (g << 8) + b;
 
     return (result);
 }
@@ -22,19 +22,19 @@ double max_in_channel(double **channel)
     double max;
     double value;
 
-    y = 0;
     max = -1;
-    while (y < HEIGHT)
+    x = 0;
+    while (x < WIDTH)
     {
-        x = 0;
-        while (x < WIDTH)
+        y = 0;
+        while (y < HEIGHT)
         {
             value = channel[y][x];
             if (value > max)
                 max = value;
-            x++;
+            y++;
         }
-        y++;
+        x++;
     }
     return (max);
 }
