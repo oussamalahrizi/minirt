@@ -23,37 +23,49 @@ t_object *init_objects()
     objects[0].id = 0;
     objects[0].base_color = new_vector3(0.25, 0.5, 0.8);
     objects[0].mat_color = new_vector3(1.0, 0.8, 0.0);
-    objects[0].translation = new_vector3(-1.5, 0.0, 0.0);
+    objects[0].translation = new_vector3(1.75, 0.0, 0.0);
     objects[0].rotation = new_vector3(0.0, 0.0, 0.0);
-    objects[0].scale = new_vector3(0.5, 0.5, 0.5);
+    objects[0].scale = new_vector3(0.75, 0.75, 0.75);
     objects[0].has_material = 1;
     objects[0].shininess = 10.0;
     objects[0].reflectivity = 0.25;
     objects[0].gtfm = set_transform(objects[0].translation, objects[0].rotation, objects[0].scale);
 
-    objects[2].type = SPHERE;
-    objects[2].id = 2;
-    objects[2].base_color = new_vector3(1.0, 0.5, 0.0);
-    objects[2].mat_color = new_vector3(1.0, 0.5, 0.0);
-    objects[2].translation = new_vector3(1.5, 0.0, 0.0);
-    objects[2].rotation = new_vector3(0.0, 0.0, 0.0);
-    objects[2].scale = new_vector3(0.5, 0.5, 0.5);
-    objects[2].has_material = 1;
-    objects[2].shininess = 10;
-    objects[2].reflectivity = 0.1;
-    objects[2].gtfm = set_transform(objects[2].translation, objects[2].rotation, objects[2].scale);
-
-    objects[3].type = SPHERE;
-    objects[3].id = 3;
+    objects[3].type = CONE;
+    objects[3].id = 2;
     objects[3].base_color = new_vector3(1.0, 0.8, 0.0);
     objects[3].mat_color = new_vector3(0.25, 0.5, 0.8);
-    objects[3].translation = new_vector3(0, 0.0, 0.0);
-    objects[3].rotation = new_vector3(0.0, 0.0, 0.0);
-    objects[3].scale = new_vector3(0.5, 0.5, 0.5);
+    objects[3].translation = new_vector3(0, 0.0, 1);
+    objects[3].rotation = new_vector3(M_PI, 0.0, 0.0);
+    objects[3].scale = new_vector3(0.5, 0.5, 1.5);
     objects[3].has_material = 1;
-    objects[3].shininess = 10.0;
-    objects[3].reflectivity = 0.75;
+    objects[3].shininess = 10;
+    objects[3].reflectivity = 0.5;
     objects[3].gtfm = set_transform(objects[3].translation, objects[3].rotation, objects[3].scale);
+
+    // objects[3].type = SPHERE;
+    // objects[3].id = 3;
+    // objects[3].base_color = new_vector3(1.0, 0.8, 0.0);
+    // objects[3].mat_color = new_vector3(0.25, 0.5, 0.8);
+    // objects[3].translation = new_vector3(0, 0.0, 0.0);
+    // objects[3].rotation = new_vector3(0.0, 0.0, 0.0);
+    // objects[3].scale = new_vector3(0.5, 0.5, 0.5);
+    // objects[3].has_material = 1;
+    // objects[3].shininess = 10.0;
+    // objects[3].reflectivity = 0.75;
+    // objects[3].gtfm = set_transform(objects[3].translation, objects[3].rotation, objects[3].scale);
+
+    objects[2].type = CYLINDER;
+    objects[2].id = 3;
+    objects[2].base_color = new_vector3(1.0, 0.8, 0.0);
+    objects[2].mat_color = new_vector3(0.25, 0.5, 0.8);
+    objects[2].translation = new_vector3(-1.5, 0.0, 0.0);
+    objects[2].rotation = new_vector3(0, 0.0, 0.0);
+    objects[2].scale = new_vector3(0.75, 0.75, 0.05);
+    objects[2].has_material = 1;
+    objects[2].shininess = 10;
+    objects[2].reflectivity = 0.5;
+    objects[2].gtfm = set_transform(objects[2].translation, objects[2].rotation, objects[2].scale);
 
     return (objects);
 }

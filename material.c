@@ -73,6 +73,10 @@ t_vec3 *compute_specular(t_object *objects, t_int_info *current, t_light *lights
             {
                 validint = test_intersect_plane(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
             }
+            else if (objects[i].type == CYLINDER)
+                validint = test_cylinder(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
+            else if (objects[i].type == CONE)
+                validint = test_cone(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
             if (validint)
                 break;
             i++;
@@ -95,11 +99,9 @@ t_vec3 *compute_specular(t_object *objects, t_int_info *current, t_light *lights
         red += lights[j].color->x * intensity;
         green += lights[j].color->y * intensity;
         blue += lights[j].color->z * intensity;
-        // printf("{%f, %f, %f} I = %f \n", red, green, blue, intensity);
         j++;
     }
     spc_color = new_vector3(red, green, blue);
-    // print_vector(spc_color);
     return (spc_color);
 }
 
@@ -121,6 +123,10 @@ int test_cast_ray(t_ray *cast_ray, t_object *objects, t_object *current, t_int_i
                 validint = intersect_sphere(cast_ray, objects[i].gtfm, intpoint, localnormal);
             else if (objects[i].type == PLANE)
                 validint = test_intersect_plane(cast_ray, objects[i].gtfm, intpoint, localnormal);
+            else if (objects[i].type == CYLINDER)
+                validint = test_cylinder(cast_ray, objects[i].gtfm, intpoint, localnormal);
+            else if (objects[i].type == CONE)
+                validint = test_cone(cast_ray, objects[i].gtfm, intpoint, localnormal);
             if (validint)
             {
                 intfound = 1;

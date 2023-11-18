@@ -44,10 +44,13 @@ int test_intersection(t_ray *ray, t_object *objects, t_int_info *info)
             validint = intersect_sphere(ray, objects[i].gtfm, intpoint, localnormal);
         else if (objects[i].type == PLANE)
             validint = test_intersect_plane(ray, objects[i].gtfm, intpoint, localnormal);
+        else if (objects[i].type == CYLINDER)
+            validint = test_cylinder(ray, objects[i].gtfm, intpoint, localnormal);
+        else if (objects[i].type == CONE)
+            validint = test_cone(ray, objects[i].gtfm, intpoint, localnormal);
         if (validint)
         {
             intfound = 1;
-            
             dist = normalize(vec3_sub(intpoint, ray->point1));
             if (dist < mindist)
             {

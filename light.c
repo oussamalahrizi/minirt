@@ -5,6 +5,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 {
 	// lightdir is the vector pointing from the intersection to the light position
 	t_vec3 *lightdir = normalized(vec3_sub(light->position, hitpoint));
+	double light_dist = normalize(vec3_sub(light->position, hitpoint));
 	t_ray *ray = new_ray(hitpoint, vec3_add(hitpoint, lightdir));
 
 	int i = 0;
@@ -19,6 +20,16 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 				validint =  intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal);
 			else if (object_list[i].type == PLANE)
 				validint = test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal);
+			else if (object_list[i].type == CYLINDER)
+				validint = test_cylinder(ray, object_list[i].gtfm, intpoint, poinormal);
+			else if (object_list[i].type == CONE)
+            	validint = test_cone(ray, object_list[i].gtfm, intpoint, poinormal);
+			if (validint)
+			{
+				double dist = normalize(vec3_sub(intpoint, hitpoint));
+				if (dist > light_dist)
+					validint = 0;
+			}
 		}
 		if (validint)
 			break;

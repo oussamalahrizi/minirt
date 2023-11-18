@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -Ofast 
 
 SRCS = 	main.c \
 		vectors_utils.c \
@@ -19,7 +19,9 @@ SRCS = 	main.c \
 		Transformation/TransformationMatrices.c \
 		Plane.c \
 		object.c \
-		material.c
+		material.c \
+		Cone.c \
+		Cylinder.c \
 	
 OBJS = ${SRCS:.c=.o}
 
@@ -31,7 +33,7 @@ all : ${NAME}
 	@$(CC) ${CFLAGS}  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
 ${NAME} : ${OBJS}
-	@$(CC) $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	@$(CC) ${CFLAGS} $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean :
 	@rm -rf ${OBJS}

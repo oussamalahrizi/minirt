@@ -9,8 +9,8 @@
 #include <stdio.h>
 
 # define WIDTH 1280
-# define HEIGHT 120
-# define FOV 25
+# define HEIGHT 720
+# define FOV 20
 # define M_PI 3.14159265358979323846
 # define HALFPI 1.5708
 # define FORWARD 1
@@ -114,8 +114,14 @@ typedef struct s_int_info
 	t_vec3 *localcolor;
 }	t_int_info;
 
-# define SPHERE 1
-# define PLANE 2
+enum
+{
+	SPHERE,
+	PLANE,
+	CYLINDER,
+	CONE
+};
+
 # define EPSILON 1e-21f
 # define MAX_REF 3
 
@@ -159,6 +165,7 @@ t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices);
 t_object* init_objects();
 t_light *init_light();
 int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal);
+int close_enough(double value);
 void set_pixel(t_image *image, t_vec3 *color, int x, int y);
 t_image *new_image();
 void copy_matrix(t_matrix *m1, t_matrix *m2);
@@ -202,4 +209,10 @@ t_matrix	**set_transform(t_vec3 *translation, t_vec3 *rotation, t_vec3 *scal);
 t_ray	*apply_transform(t_ray *input_ray, t_matrix **gtfm, int dirFlag);
 t_vec3	*apply_transform_vector(t_vec3 *inputVector, int dirFlag, t_matrix **gtfm);
 
+
+//cylinder test intersection
+int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal);
+
+// cone intersection
+int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal);
 #endif

@@ -11,7 +11,11 @@ unsigned int rgbToInteger(t_vec3 *color)
 }
 
 
-
+int mouse_hook(void **param)
+{
+	mlx_destroy_window(param[0], param[1]);
+	exit(1);
+}
 
 int main(void)
 {
@@ -26,7 +30,7 @@ int main(void)
 	initialize_camera(camera);
 	update_camera(camera);
 	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracer");
+	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracing goes prrrr");
 	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 	t_light *light_list = init_light();
@@ -39,9 +43,9 @@ int main(void)
 	int y = 0;
 	while (y < HEIGHT)
 	{
-		printf("line : %d", y + 1);
-		printf("\r");
-		fflush(stdout);
+		// printf("line : %d", y + 1);
+		// printf("\r");
+		// fflush(stdout);
 		x = 0;
 		while (x < WIDTH)
 		{
@@ -77,6 +81,8 @@ int main(void)
 		y++;
 	}
 	render(image, mlx_ptr, win_ptr);
+	void **param = (void *[]) {mlx_ptr, win_ptr};
+	mlx_hook(win_ptr, 17, 0, mouse_hook, param);
 	mlx_loop(mlx_ptr);
 	return (0);
 }

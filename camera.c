@@ -12,13 +12,13 @@ void update_camera(t_camera *camera)
 	// still dont understand this
 	// camera screen center = camera position + (camera length * camera alignement vector) 
 	camera->alignement_vec = multiply_vec3_number(camera->alignement_vec, camera->camera_length);
-	camera->screen_center = vec3_add(camera->alignement_vec, camera->position);
+	camera->screen_center = vec3_add(camera->position, camera->alignement_vec);
 	// change the u and v vector to match the size and aspect ratio
 	// after calculating the u and v on our world coordinates we need to update
 	//them based on the parmeters given in the subject such as aspect ratio and
 	//the horizontal size (fov / 180)
-	camera->u = multiply_vec3_number(camera->u , camera->horizontal_size);
-	camera->v = multiply_vec3_number(camera->v, (camera->horizontal_size / (double) camera->aspectRatio));
+	camera->u = multiply_vec3_number(camera->u, camera->horizontal_size);
+	camera->v = multiply_vec3_number(camera->v, camera->horizontal_size / camera->aspectRatio);
 }
 
 t_ray *generate_ray(double x, double y, t_camera *camera)
@@ -33,12 +33,11 @@ t_ray *generate_ray(double x, double y, t_camera *camera)
 
 void initialize_camera(t_camera *camera)
 {
-	camera->position = new_vector3(0.0, -10.0, -2.0);
+	camera->position = new_vector3(0, -10.0, -2.0);
 	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
 	camera->camera_length = 1.0;
-	double rad_fov = FOV * (M_PI / 180.0);
-	camera->horizontal_size = 2 * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
-	// camera->horizontal_size = 0.25;
-	camera->aspectRatio = 16.0 / 9.0; // make sure the screen size matches the aspect ratio
+	double rad_fov = FOV * M_PI / 180.0;
+	camera->horizontal_size = 2.0 * camera->camera_length * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
+	camera->aspectRatio = (double) WIDTH / (double) HEIGHT; // make sure the screen size matches the aspect ratio
 }
