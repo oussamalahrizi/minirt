@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast 
+CFLAGS = -Wall -Wextra -Werror -Ofast
 
 SRCS = 	main.c \
 		vectors_utils.c \

@@ -13,7 +13,7 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 
 	double delta = sqrtf(pow(b, 2) - (4 * a * c));
 
-	t_vec3 *poi[3];
+	t_vec3 *poi[3] = {NULL, NULL, NULL};
 	double t[3];
 	int t1valid, t2valid, t3valid;
 	t1valid = 0;
@@ -98,12 +98,29 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 	
 		t_vec3 *orgnormal = new_vector3(0,0,0);
 		t_vec3 *newnormal;
-		t_vec3 *localorigin = new_vector3 (0,0,0);
-		t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
+		// t_vec3 *localorigin = new_vector3 (0,0,0);
+		// t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
 		orgnormal->x = validpoi->x;
 		orgnormal->y = validpoi->y;
-		orgnormal->z = -sqrtf( pow(orgnormal->x, 2) + pow(orgnormal->y, 2));
-		newnormal = normalized(vec3_sub(apply_transform_vector(orgnormal, FORWARD, gtfm), globalorigin));
+		orgnormal->z = validpoi->z;
+
+		orgnormal = cross(orgnormal, cross(orgnormal, new_vector3(0, 0, 1)));
+		orgnormal = normalized(orgnormal);
+
+		double *values = (double []){orgnormal->x, orgnormal->y, orgnormal->z};
+		t_matrix *new = create_matrix(3, 1);
+		fill_mt(new, values);
+
+		t_matrix *m = create_matrix(3, 3);
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				m->matrix[i][j] = gtfm[1]->matrix[j][i];
+		
+
+		new = mt_multiplication(m, new);
+		newnormal = normalized(new_vector3(new->matrix[0][0], new->matrix[1][0], new->matrix[2][0]));
+
+		// newnormal = normalized(vec3_sub(apply_transform_vector(orgnormal, FORWARD, gtfm), globalorigin));
 		copy_vector_values(localnormal, newnormal);
 		free(newnormal);
 		return (1);

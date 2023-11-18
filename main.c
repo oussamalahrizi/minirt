@@ -43,9 +43,9 @@ int main(void)
 	int y = 0;
 	while (y < HEIGHT)
 	{
-		// printf("line : %d", y + 1);
-		// printf("\r");
-		// fflush(stdout);
+		printf("line : %d", y + 1);
+		printf("\r");
+		fflush(stdout);
 		x = 0;
 		while (x < WIDTH)
 		{
