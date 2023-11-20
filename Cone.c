@@ -1,6 +1,19 @@
 #include "minirt.h"
 
-int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal)
+static t_vec2 get_uvcoords(t_vec3 *intpoint, int cap)
+{
+	if (cap)
+		return ((t_vec2) {intpoint->x, intpoint->y});
+	double x = intpoint->x;
+	double y = intpoint->y;
+	double z = intpoint->z;
+	double u = atan2(y, x) / M_PI;
+	double v = (z * 2) + 1;
+
+	return ((t_vec2) {u, v});
+}
+
+int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal, t_vec2 *uv)
 {
 	t_ray *back_ray = apply_transform(ray, gtfm, BACKWARD);
 	t_vec3 *vhat = normalized(back_ray->direction);
@@ -100,6 +113,9 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 		newnormal = fixed_normal(gtfm[0], validpoi);
 		copy_vector_values(localnormal, newnormal);
 		free(newnormal);
+		t_vec2 get_uv = get_uvcoords(validpoi, 0);
+		uv->x = get_uv.x;
+		uv->y = get_uv.y;
 		return (1);
 	}
 	else
@@ -118,6 +134,9 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 				newnormal = fixed_normal(gtfm[0], hitpoint);
 				copy_vector_values(localnormal, newnormal);
 				free(newnormal);
+				t_vec2 get_uv = get_uvcoords(validpoi, 1);
+				uv->x = get_uv.x;
+				uv->y = get_uv.y;
 				return (1);
 			}
 			else

@@ -33,21 +33,23 @@ int test_intersection(t_ray *ray, t_object *objects, t_int_info *info)
     info->intpoint = new_vector3(0,0,0);
     info->localnormal = new_vector3(0,0,0);
     info->localcolor = new_vector3(0,0,0);
+    info->uv = malloc(sizeof(t_vec2));
     intpoint = new_vector3(0,0,0);
     localnormal = new_vector3(0,0,0);
+    t_vec2 *uv = malloc(sizeof(t_vec2));
     i = 0;
     validint = 0;
     mindist = 1e6;
     while (i < 4)
     {
         if (objects[i].type == SPHERE)
-            validint = intersect_sphere(ray, objects[i].gtfm, intpoint, localnormal);
+            validint = intersect_sphere(ray, objects[i].gtfm, intpoint, localnormal, uv);
         else if (objects[i].type == PLANE)
-            validint = test_intersect_plane(ray, objects[i].gtfm, intpoint, localnormal);
+            validint = test_intersect_plane(ray, objects[i].gtfm, intpoint, localnormal, uv);
         else if (objects[i].type == CYLINDER)
-            validint = test_cylinder(ray, objects[i].gtfm, intpoint, localnormal);
+            validint = test_cylinder(ray, objects[i].gtfm, intpoint, localnormal, uv);
         else if (objects[i].type == CONE)
-            validint = test_cone(ray, objects[i].gtfm, intpoint, localnormal);
+            validint = test_cone(ray, objects[i].gtfm, intpoint, localnormal, uv);
         if (validint)
         {
             intfound = 1;
@@ -58,6 +60,8 @@ int test_intersection(t_ray *ray, t_object *objects, t_int_info *info)
                 info->closest_object = &objects[i];
                 copy_vector_values(info->intpoint, intpoint);
                 copy_vector_values(info->localnormal, localnormal);
+                info->uv->x = uv->x;
+                info->uv->y = uv->y;
             }
         }
         i++;

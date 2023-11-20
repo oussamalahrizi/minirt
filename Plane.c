@@ -6,7 +6,7 @@ int close_enough(double value)
     return (fabs(value) < EPSILON);
 }
 
-int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal)
+int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec2 *uv)
 {
     t_ray *back_ray = apply_transform(ray,  gtfm, BACKWARD);
     t_vec3 *ray_dir = normalized(back_ray->direction);
@@ -40,6 +40,8 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 temp = fixed_normal(gtfm[0], normalvector);
                 copy_vector_values(localnormal, temp);
                 free(temp);
+                uv->x = u;
+                uv->y = v;
                 return (1);
             }
             return (0);

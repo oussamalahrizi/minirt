@@ -1,7 +1,23 @@
 #include "minirt.h"
 
 
-int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal)
+static t_vec2 get_uvcoord(t_vec3 *intpoint)
+{
+	double x = intpoint->x;
+	double y = intpoint->y;
+	double z = intpoint->z;
+
+	double u = atan(sqrtf(pow(x, 2) + pow(y, 2)) / z);
+	double v = atan(y / x);
+	if (x < 0)
+		v += M_PI;
+	u /= M_PI;
+	v /= M_PI;
+
+	return ((t_vec2) {u, v});
+}
+
+int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec2 *uv)
 {
 	t_ray *back_ray = apply_transform(ray, gtfm, BACKWARD);
 	t_vec3 *vhat = normalized(back_ray->direction);
@@ -29,11 +45,13 @@ int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *l
 		copy_vector_values(hitposition, temp);
 		free(temp);
 		// compute local normal
-		// t_vec3 *obj_origin = new_vector3(0.0, 0.0, 0.0);
-		// t_vec3 *new_origin = apply_transform_vector(obj_origin, FORWARD, gtfm);
 		temp = fixed_normal(gtfm[0], intpoint);
 		copy_vector_values(localnormal, temp);
 		free(temp);
+
+		t_vec2 get_uv = get_uvcoord(intpoint);
+		uv->x = get_uv.x;
+		uv->y = get_uv.y;
 		return (1);
 	}
 	return (0);

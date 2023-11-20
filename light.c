@@ -11,19 +11,20 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	int i = 0;
 	t_vec3 *intpoint = new_vector3(0,0,0);
 	t_vec3 *poinormal = new_vector3(0,0,0);
+	t_vec2 *uv = malloc(sizeof(t_vec2));
 	int validint = 0;
 	while (i < 4)
 	{
 		if (current_object != &object_list[i])
 		{
 			if (object_list[i].type == SPHERE)
-				validint =  intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal);
+				validint =  intersect_sphere(ray, object_list[i].gtfm, intpoint, poinormal, uv);
 			else if (object_list[i].type == PLANE)
-				validint = test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal);
+				validint = test_intersect_plane(ray, object_list[i].gtfm, intpoint, poinormal, uv);
 			else if (object_list[i].type == CYLINDER)
-				validint = test_cylinder(ray, object_list[i].gtfm, intpoint, poinormal);
+				validint = test_cylinder(ray, object_list[i].gtfm, intpoint, poinormal, uv);
 			else if (object_list[i].type == CONE)
-            	validint = test_cone(ray, object_list[i].gtfm, intpoint, poinormal);
+            	validint = test_cone(ray, object_list[i].gtfm, intpoint, poinormal, uv);
 			if (validint)
 			{
 				double dist = normalize(vec3_sub(intpoint, hitpoint));

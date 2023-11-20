@@ -103,6 +103,8 @@ typedef struct s_object
 	double shininess;
 	double reflectivity;
 	t_matrix *linear;
+	int has_texture;
+	t_matrix *checker_matrix;
 	
 }	t_object;
 
@@ -112,6 +114,7 @@ typedef struct s_int_info
 	t_vec3 *intpoint;
 	t_vec3 *localnormal;
 	t_vec3 *localcolor;
+	t_vec2 *uv;
 }	t_int_info;
 
 enum
@@ -143,7 +146,7 @@ void initialize_camera(t_camera *camera);
 t_ray *generate_ray(double x, double y, t_camera *camera);
 void update_camera(t_camera *camera);
 void print_vector(t_vec3 *vec);
-int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal);
+int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec2 *uv);
 int compute_illumination(t_light *light, t_object *object_list, t_object *current_object, t_vec3 *hitpoint, t_vec3 *localnormal, t_vec3 *color, double *intensity);
 t_vec3 *copy_vector(t_vec3 *vec);
 t_ray *new_ray(t_vec3 *point1, t_vec3 *point2);
@@ -164,7 +167,7 @@ t_ray *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices);
 t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices);
 t_object* init_objects();
 t_light *init_light();
-int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal);
+int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec2 *uv);
 int close_enough(double value);
 void set_pixel(t_image *image, t_vec3 *color, int x, int y);
 t_image *new_image();
@@ -211,9 +214,13 @@ t_vec3	*apply_transform_vector(t_vec3 *inputVector, int dirFlag, t_matrix **gtfm
 
 
 //cylinder test intersection
-int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal);
+int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal, t_vec2 *uv);
 
 // cone intersection
-int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal);
+int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal, t_vec2 *uv);
 t_vec3 *fixed_normal(t_matrix *forward, t_vec3 *hitpoint);
+
+// checker stuff
+t_matrix *set_transform_checker(t_vec2 *trans, t_vec2 *scale, double angle);
+t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix);
 #endif

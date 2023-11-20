@@ -59,6 +59,7 @@ t_vec3 *compute_specular(t_object *objects, t_int_info *current, t_light *lights
         test->localnormal = new_vector3(0, 0, 0);
         test->intpoint = new_vector3(0, 0, 0);
         test->localcolor = new_vector3(0, 0, 0);
+        test->uv = malloc(sizeof(t_vec2));
 
         int i = 0;
         int validint = 0;
@@ -67,16 +68,16 @@ t_vec3 *compute_specular(t_object *objects, t_int_info *current, t_light *lights
         {
             if (objects[i].type == SPHERE)
             {
-                validint = intersect_sphere(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
+                validint = intersect_sphere(light_ray, objects[i].gtfm, test->intpoint, test->localnormal, test->uv);
             }
             else if (objects[i].type == PLANE)
             {
-                validint = test_intersect_plane(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
+                validint = test_intersect_plane(light_ray, objects[i].gtfm, test->intpoint, test->localnormal, test->uv);
             }
             else if (objects[i].type == CYLINDER)
-                validint = test_cylinder(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
+                validint = test_cylinder(light_ray, objects[i].gtfm, test->intpoint, test->localnormal, test->uv);
             else if (objects[i].type == CONE)
-                validint = test_cone(light_ray, objects[i].gtfm, test->intpoint, test->localnormal);
+                validint = test_cone(light_ray, objects[i].gtfm, test->intpoint, test->localnormal, test->uv);
             if (validint)
                 break;
             i++;
@@ -111,6 +112,7 @@ int test_cast_ray(t_ray *cast_ray, t_object *objects, t_object *current, t_int_i
     double min_dist = 1e6;
     t_vec3 *intpoint = new_vector3 (0,0,0);
     t_vec3 *localnormal = new_vector3 (0,0,0);
+    t_vec2 *uv = malloc(sizeof(t_vec2));
     int intfound = 0;
     int validint = 0;
 
@@ -120,13 +122,13 @@ int test_cast_ray(t_ray *cast_ray, t_object *objects, t_object *current, t_int_i
         if (&objects[i] != current)
         {
             if (objects[i].type == SPHERE)
-                validint = intersect_sphere(cast_ray, objects[i].gtfm, intpoint, localnormal);
+                validint = intersect_sphere(cast_ray, objects[i].gtfm, intpoint, localnormal, uv);
             else if (objects[i].type == PLANE)
-                validint = test_intersect_plane(cast_ray, objects[i].gtfm, intpoint, localnormal);
+                validint = test_intersect_plane(cast_ray, objects[i].gtfm, intpoint, localnormal, uv);
             else if (objects[i].type == CYLINDER)
-                validint = test_cylinder(cast_ray, objects[i].gtfm, intpoint, localnormal);
+                validint = test_cylinder(cast_ray, objects[i].gtfm, intpoint, localnormal, uv);
             else if (objects[i].type == CONE)
-                validint = test_cone(cast_ray, objects[i].gtfm, intpoint, localnormal);
+                validint = test_cone(cast_ray, objects[i].gtfm, intpoint, localnormal, uv);
             if (validint)
             {
                 intfound = 1;
@@ -137,6 +139,8 @@ int test_cast_ray(t_ray *cast_ray, t_object *objects, t_object *current, t_int_i
                     info->closest_object = &objects[i];
                     copy_vector_values(info->intpoint , intpoint);
                     copy_vector_values(info->localnormal , localnormal);
+                    info->uv->x = uv->x;
+                    info->uv->y = uv->y;
                 }
             }
         }
@@ -156,6 +160,7 @@ t_vec3 *reflection_color(t_object *objects, t_light *lights, t_int_info *object_
     t_int_info *test = malloc(sizeof(t_int_info));
     test->intpoint = new_vector3(0,0,0);
     test->localnormal = new_vector3(0,0,0);
+    test->uv = malloc(sizeof(t_vec2));
     int valid_int = test_cast_ray(cast_ray, objects, object_info->closest_object ,test);
     if (valid_int && ref_count < MAX_REF)
     {
@@ -172,6 +177,7 @@ t_vec3 *reflection_color(t_object *objects, t_light *lights, t_int_info *object_
     return (reflect_color);
 }
 
+
 t_vec3 *compute_color(t_object *objects, t_light *lights, t_int_info *object_info, t_ray *camera_ray, int ref_count)
 {
 
@@ -179,9 +185,12 @@ t_vec3 *compute_color(t_object *objects, t_light *lights, t_int_info *object_inf
     t_vec3 *diff_color = NULL;
     t_vec3 *reflect_color = new_vector3 (0,0,0);
     t_vec3 *spc_color = new_vector3 (0.0, 0.0, 0.0);
-
     // calculate the diffuse color (along with ambient ofc)
-    diff_color = diffuse_color(objects, lights, object_info, object_info->closest_object->mat_color);
+    if (object_info->closest_object->has_texture)
+        diff_color = diffuse_color(objects, lights, object_info,
+            get_color_checker(object_info->uv, object_info->closest_object->checker_matrix));
+    else
+        diff_color = diffuse_color(objects, lights, object_info, object_info->closest_object->mat_color);
     
     // if the material has reflectivity compute the reflection color
     if (object_info->closest_object->reflectivity > 0.0f)

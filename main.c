@@ -45,6 +45,9 @@ int main(void)
 	int y = 0;
 	while (y < HEIGHT)
 	{
+		printf("line : %d", y + 1);
+		printf("\r");
+		fflush(stdout);
 		x = 0;
 		while (x < WIDTH)
 		{
@@ -75,6 +78,8 @@ int main(void)
 					free(color);
 				}
 			}
+			else
+				set_pixel(image, new_vector3(0.5, 0.8, 0.9), x, y);
 			x++;
 		}
 		y++;
