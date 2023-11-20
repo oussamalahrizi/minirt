@@ -34,16 +34,12 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 copy_vector_values(hitposition, temp);
                 free(temp);
                 // Compute the local normal.
-                t_vec3 *localorigin = new_vector3(0.0, 0.0, 0.0);
+                // t_vec3 *localorigin = new_vector3(0.0, 0.0, 0.0);
                 t_vec3 *normalvector = new_vector3(0.0, 0.0, -1.0);
-                t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
-                temp = apply_transform_vector(normalvector, FORWARD, gtfm);
-                temp = vec3_sub(temp, globalorigin);
-                temp = normalized(temp);
+                // t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
+                temp = fixed_normal(gtfm[0], normalvector);
                 copy_vector_values(localnormal, temp);
                 free(temp);
-                // return base color
-                // copy_vector_values(localcolor, base_color);
                 return (1);
             }
             return (0);

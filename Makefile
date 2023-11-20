@@ -22,6 +22,7 @@ SRCS = 	main.c \
 		material.c \
 		Cone.c \
 		Cylinder.c \
+		Normals.c
 	
 OBJS = ${SRCS:.c=.o}
 
@@ -33,7 +34,7 @@ all : ${NAME}
 	@$(CC) ${CFLAGS}  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
 ${NAME} : ${OBJS}
-	@$(CC) ${CFLAGS} $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	@$(CC) ${CxFLAGS} $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean :
 	@rm -rf ${OBJS}

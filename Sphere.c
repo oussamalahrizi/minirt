@@ -29,10 +29,9 @@ int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *l
 		copy_vector_values(hitposition, temp);
 		free(temp);
 		// compute local normal
-		t_vec3 *obj_origin = new_vector3(0.0, 0.0, 0.0);
-		t_vec3 *new_origin = apply_transform_vector(obj_origin, FORWARD, gtfm);
-		temp = vec3_sub(hitposition, new_origin);
-		temp = normalized(temp);
+		// t_vec3 *obj_origin = new_vector3(0.0, 0.0, 0.0);
+		// t_vec3 *new_origin = apply_transform_vector(obj_origin, FORWARD, gtfm);
+		temp = fixed_normal(gtfm[0], intpoint);
 		copy_vector_values(localnormal, temp);
 		free(temp);
 		return (1);

@@ -38,7 +38,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	if (!validint)
 	{
 		double angle = acos(dot_product(localnormal, lightdir));
-		if (angle > 1.5708)
+		if (angle > HALFPI)
 		{
 			// angle too big
 			copy_vector_values(color, light->color);
@@ -50,7 +50,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 			// there is illumination
 			copy_vector_values(color, light->color);
 
-			*intensity = light->intensity * (1 - (angle / 1.5708));
+			*intensity = light->intensity * (1 - (angle / HALFPI));
 			return (1);
 		}
 	}

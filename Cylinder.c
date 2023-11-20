@@ -115,12 +115,12 @@ int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localno
 		// compute the localnormal
 		t_vec3 *orgnormal = new_vector3(0,0,0);
 		t_vec3 *new_normal;
-		t_vec3 *localorigin = new_vector3(0,0,0);
-		t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
+		// t_vec3 *localorigin = new_vector3(0,0,0);
+		// t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
 		orgnormal->x = validpoi->x;
 		orgnormal->y = validpoi->y;
 		// orgnormal->z = 0.0; no need for this cuz it's alreay 0
-		new_normal = normalized(vec3_sub(apply_transform_vector(orgnormal, FORWARD, gtfm), globalorigin));
+		new_normal = fixed_normal(gtfm[0], orgnormal);
 		copy_vector_values(localnormal, new_normal);
 		free(new_normal);
 		return (1);
@@ -138,10 +138,11 @@ int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localno
 				copy_vector_values(hitpoint, temp);
 				free(temp);
 				// compute the localnormal
-				t_vec3 *localorigin = new_vector3(0,0,0);
+				// t_vec3 *localorigin = new_vector3(0,0,0);
 				t_vec3 *normalvector = new_vector3(0, 0, 0 + validpoi->z);
-				t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
-				temp = normalized(vec3_sub(apply_transform_vector(normalvector, FORWARD, gtfm), globalorigin));
+				// t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
+				// temp = normalized(vec3_sub(apply_transform_vector(normalvector, FORWARD, gtfm), globalorigin));
+				temp = fixed_normal(gtfm[0], normalvector);
 				copy_vector_values(localnormal, temp);
 				free(temp);
 				return (1);

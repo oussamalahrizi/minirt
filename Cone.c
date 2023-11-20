@@ -96,31 +96,8 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 		copy_vector_values(hitpoint, temp);
 		free(temp);
 	
-		t_vec3 *orgnormal = new_vector3(0,0,0);
 		t_vec3 *newnormal;
-		// t_vec3 *localorigin = new_vector3 (0,0,0);
-		// t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
-		orgnormal->x = validpoi->x;
-		orgnormal->y = validpoi->y;
-		orgnormal->z = validpoi->z;
-
-		orgnormal = cross(orgnormal, cross(orgnormal, new_vector3(0, 0, 1)));
-		orgnormal = normalized(orgnormal);
-
-		double *values = (double []){orgnormal->x, orgnormal->y, orgnormal->z};
-		t_matrix *new = create_matrix(3, 1);
-		fill_mt(new, values);
-
-		t_matrix *m = create_matrix(3, 3);
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				m->matrix[i][j] = gtfm[1]->matrix[j][i];
-		
-
-		new = mt_multiplication(m, new);
-		newnormal = normalized(new_vector3(new->matrix[0][0], new->matrix[1][0], new->matrix[2][0]));
-
-		// newnormal = normalized(vec3_sub(apply_transform_vector(orgnormal, FORWARD, gtfm), globalorigin));
+		newnormal = fixed_normal(gtfm[0], validpoi);
 		copy_vector_values(localnormal, newnormal);
 		free(newnormal);
 		return (1);
@@ -134,13 +111,13 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 				t_vec3 *temp = apply_transform_vector(validpoi, FORWARD, gtfm);
 				copy_vector_values(hitpoint, temp);
 				free(temp);
-
-
 				t_vec3 *localorigin = new_vector3 (0,0,0);
 				t_vec3 *globalorigin = apply_transform_vector(localorigin, FORWARD, gtfm);
 				t_vec3 *normalvector = new_vector3 (0,0, 1);
-				temp = normalized(vec3_sub(apply_transform_vector(normalvector, FORWARD, gtfm), globalorigin));
-				copy_vector_values(localnormal, temp);
+				t_vec3 *newnormal = normalized(vec3_sub(apply_transform_vector(normalvector, FORWARD, gtfm), globalorigin));
+				newnormal = fixed_normal(gtfm[0], hitpoint);
+				copy_vector_values(localnormal, newnormal);
+				free(newnormal);
 				return (1);
 			}
 			else

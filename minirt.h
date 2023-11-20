@@ -215,4 +215,5 @@ int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localno
 
 // cone intersection
 int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal);
+t_vec3 *fixed_normal(t_matrix *forward, t_vec3 *hitpoint);
 #endif
