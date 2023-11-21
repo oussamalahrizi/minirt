@@ -81,5 +81,39 @@ t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix)
 	if (check % 2)
 		return (new_vector3(1,1,1));
 	
-	return (new_vector3(0.2, 0.2, 0.2));
+	return (new_vector3(0.0, 0.0, 0.0));
+}
+
+
+t_vec3 *get_color_texture(t_vec2 *uvcoords, t_matrix *checker_matrix, t_data *image)
+{
+	t_vec2 *inputvec = malloc(sizeof(t_vec2));
+
+	inputvec->x = uvcoords->x;
+	inputvec->y = uvcoords->y;
+
+	(void) checker_matrix;
+	double u = (inputvec->x + 1) / 2.0;
+	double v = (inputvec->y + 1) / 2.0;
+	
+	int width = image->width;
+	int height = image->height;
+	
+
+	int x = round(u * width);
+	int y = height - round(v * height);
+
+	x = ((x % width) + width) % width;
+	y = ((y % height) + height) % height;
+	
+	int pixel_index = (y * image->line_length) + (x * (image->bits_per_pixel / 8));
+	char *dst = image->addr + pixel_index;
+
+	if (dst < image->addr || dst >= image->addr + image->line_length * image->height)
+		return (new_vector3(0,0,0));
+
+	unsigned int final = *((unsigned int *)dst);
+	t_vec3 *color = new_vector3 ((final >> 16 & 255) / 255.f, (final >> 8 & 255) / 255.f,
+		(final & 255) / 255.f);
+	return (color);
 }

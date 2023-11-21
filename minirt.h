@@ -10,7 +10,7 @@
 
 # define WIDTH 1280
 # define HEIGHT 720
-# define FOV 20
+# define FOV 75
 # define M_PI 3.14159265358979323846
 # define HALFPI 1.5708
 # define FORWARD 1
@@ -53,12 +53,15 @@ typedef struct s_ray
 }	t_ray;
 
 
-typedef struct	s_data {
+typedef struct	s_data
+{
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+	int width;
+	int height	;
 }				t_data;
 
 typedef struct s_camera
@@ -105,6 +108,8 @@ typedef struct s_object
 	t_matrix *linear;
 	int has_texture;
 	t_matrix *checker_matrix;
+	int  (*intersect)(t_ray*, t_matrix**, t_vec3*, t_vec3*, t_vec2*);
+	t_data *image;
 	
 }	t_object;
 
@@ -223,4 +228,8 @@ t_vec3 *fixed_normal(t_matrix *forward, t_vec3 *hitpoint);
 // checker stuff
 t_matrix *set_transform_checker(t_vec2 *trans, t_vec2 *scale, double angle);
 t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix);
+t_vec3 *get_color_texture(t_vec2 *uvcoords,t_matrix *checker_matrix, t_data *image);
+
+extern void *mlx_ptr;
+extern void *win_ptr;
 #endif

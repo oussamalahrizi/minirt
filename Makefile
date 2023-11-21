@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast
+CFLAGS = -Wall -Wextra  -Ofast 
 
 SRCS = 	main.c \
 		vectors_utils.c \
@@ -32,7 +32,8 @@ NAME = minirt
 all : ${NAME}
 
 %.o : %.c
-	@$(CC) ${CFLAGS}  -I/usr/include -Imlx_linux -O3 -c $< -o $@
+	@$(CC) ${CFLAGS} -I/usr/include -Imlx_linux -O3 -c $< -o $@
+
 
 ${NAME} : ${OBJS}
 	@$(CC) ${CFLAGS} $(OBJS)  -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
@@ -44,5 +45,7 @@ fclean : clean
 	@rm -rf ${NAME}
 
 re : fclean all
+
+
 
 .PHONY : clean fclean re all

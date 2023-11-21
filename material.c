@@ -187,8 +187,16 @@ t_vec3 *compute_color(t_object *objects, t_light *lights, t_int_info *object_inf
     t_vec3 *spc_color = new_vector3 (0.0, 0.0, 0.0);
     // calculate the diffuse color (along with ambient ofc)
     if (object_info->closest_object->has_texture)
-        diff_color = diffuse_color(objects, lights, object_info,
-            get_color_checker(object_info->uv, object_info->closest_object->checker_matrix));
+    {
+        if (object_info->closest_object->has_texture == 2)
+        {
+            diff_color = diffuse_color(objects, lights, object_info,
+                get_color_texture(object_info->uv, object_info->closest_object->checker_matrix, object_info->closest_object->image));
+        }
+        else
+            diff_color = diffuse_color(objects, lights, object_info,
+                get_color_checker(object_info->uv, object_info->closest_object->checker_matrix));
+    }
     else
         diff_color = diffuse_color(objects, lights, object_info, object_info->closest_object->mat_color);
     

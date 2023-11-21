@@ -42,6 +42,11 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 free(temp);
                 uv->x = u;
                 uv->y = v;
+                if (u < -1 || u > 1 || v < -1 || u > 1)
+                {
+                    printf("stop\n");
+                    while(1);
+                }
                 return (1);
             }
             return (0);

@@ -17,12 +17,12 @@ int mouse_hook(void **param)
 	exit(1);
 }
 
+void *mlx_ptr;
+void *win_ptr;
 
-#include <fcntl.h>
 int main(void)
 {
-	void *mlx_ptr;
-	void *win_ptr;
+	
 	t_data img;
 	// t_scene	scene;
 	t_camera *camera;
@@ -36,6 +36,8 @@ int main(void)
 	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 	t_light *light_list = init_light();
+
+	
 	t_object *objects = init_objects();
 	
 	double xFact = 1.0 / ((double)(WIDTH) / 2.0);
@@ -78,12 +80,11 @@ int main(void)
 					free(color);
 				}
 			}
-			else
-				set_pixel(image, new_vector3(0.5, 0.8, 0.9), x, y);
 			x++;
 		}
 		y++;
 	}
+	
 	render(image, mlx_ptr, win_ptr);
 	void **param = (void *[]) {mlx_ptr, win_ptr};
 	mlx_hook(win_ptr, 17, 0, mouse_hook, param);
@@ -91,9 +92,3 @@ int main(void)
 	return (0);
 }
 
-// vectors: corss dot normileze normilized operatios : */ -+ with other vectors and numbers | lenght = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
-
-// x = a2 + b2.t
-
-// r^2 = x^2 + y^y + z^2
-// => r^2 = (a2.x + b2.x*t) +  (a2.y + b2.y*t) + (a2.z + b2.z*t);
