@@ -9,7 +9,7 @@ static t_vec2 get_uvcoords(t_vec3 *intpoint, int cap)
 	double y = intpoint->y;
 	double z = intpoint->z;
 	double u = atan2(y , x) / M_PI;
-	double v = z;
+	double v = -z;
 	return ((t_vec2) {u, v});
 }
 

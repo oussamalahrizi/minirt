@@ -33,7 +33,7 @@ t_ray *generate_ray(double x, double y, t_camera *camera)
 
 void initialize_camera(t_camera *camera)
 {
-	camera->position = new_vector3(0, -5.0, -2.0);
+	camera->position = new_vector3(0, -2.0, -2.0);
 	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
 	camera->camera_length = 1.0;

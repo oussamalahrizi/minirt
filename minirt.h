@@ -7,12 +7,14 @@
 #include "mlx_linux/mlx.h"
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 
 # define WIDTH 1280
 # define HEIGHT 720
 # define FOV 75
 # define M_PI 3.14159265358979323846
 # define HALFPI 1.5708
+
 # define FORWARD 1
 # define BACKWARD 0
 
@@ -110,6 +112,7 @@ typedef struct s_object
 	t_matrix *checker_matrix;
 	int  (*intersect)(t_ray*, t_matrix**, t_vec3*, t_vec3*, t_vec2*);
 	t_data *image;
+	t_data *imgnormal;
 	
 }	t_object;
 
@@ -131,7 +134,7 @@ enum
 };
 
 # define EPSILON 1e-21f
-# define MAX_REF 3
+# define MAX_REF 1
 
 
 t_vec3 *new_vector3(double x, double y, double z);
@@ -144,6 +147,7 @@ double length2(t_vec3 *vector);
 t_vec3	*vec3_div_number(t_vec3 *vec1, int n);
 t_vec3	*vec3_sub(t_vec3 *vec1, t_vec3 *vec2);
 t_vec3	*vec3_add(t_vec3 *vec1, t_vec3 *vec2);
+t_vec3 *vec3_add_number(t_vec3 *vec, double num);
 t_vec3 *negative_vec3(t_vec3 *vector);
 double max(double v1, double v2);
 t_vec3 *multiply_vec3_number(t_vec3 *vector, double number);
@@ -170,7 +174,7 @@ int rgb_to_int(double red, double green, double blue, double max);
 void render(t_image *image, void *mlx, void *win);
 t_ray *apply_to_ray(t_ray *input_ray, int dirflag, t_matrix **matrices);
 t_vec3 *apply_to_vector(t_vec3 *input_vec, int dirflag, t_matrix **matrices);
-t_object* init_objects();
+void init_objects(t_object *objects);
 t_light *init_light();
 int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *localnormal, t_vec2 *uv);
 int close_enough(double value);
@@ -228,7 +232,8 @@ t_vec3 *fixed_normal(t_matrix *forward, t_vec3 *hitpoint);
 // checker stuff
 t_matrix *set_transform_checker(t_vec2 *trans, t_vec2 *scale, double angle);
 t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix);
-t_vec3 *get_color_texture(t_vec2 *uvcoords,t_matrix *checker_matrix, t_data *image);
+t_vec3 *get_color_texture(t_vec2 *uvcoords, t_data *image);
+t_vec2 *apply_transform_checker(t_matrix *transform, t_vec2 *input);
 
 extern void *mlx_ptr;
 extern void *win_ptr;

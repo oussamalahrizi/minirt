@@ -39,6 +39,7 @@ int compute_illumination(t_light *light, t_object *object_list, t_object *curren
 	if (!validint)
 	{
 		double angle = acos(dot_product(localnormal, lightdir));
+		
 		if (angle > HALFPI)
 		{
 			// angle too big

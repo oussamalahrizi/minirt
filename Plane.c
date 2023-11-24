@@ -16,7 +16,7 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
         // if t is negative then the intersection is behind the camera
         if (t > 0.0)
         {
-            /*
+            /* ax + tbx =   u;
                 double u = bckRay.m_point1.GetElement(0) + (k.GetElement(0) * t);
                 double v = bckRay.m_point1.GetElement(1) + (k.GetElement(1) * t);
             */
@@ -40,13 +40,8 @@ int test_intersect_plane(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec
                 temp = fixed_normal(gtfm[0], normalvector);
                 copy_vector_values(localnormal, temp);
                 free(temp);
-                uv->x = u;
-                uv->y = v;
-                if (u < -1 || u > 1 || v < -1 || u > 1)
-                {
-                    printf("stop\n");
-                    while(1);
-                }
+                uv->x = intpoint->x;
+                uv->y = intpoint->y;
                 return (1);
             }
             return (0);

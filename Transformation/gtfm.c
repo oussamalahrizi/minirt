@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 23:22:11 by aaitouna          #+#    #+#             */
-/*   Updated: 2023/11/15 22:24:20 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/11/23 08:36:01 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,47 +75,3 @@ t_vec3	*apply_transform_vector(t_vec3 *inputVector, int dirFlag,
 	delete_matrix(tmp);
 	return (result);
 }
-
-// void	set_lineartfm(t_object *this)
-// {
-// 	t_matrix	*tmp;
-// 	t_matrix	*inverse_tmp;
-// 	int			i;
-// 	int			j;
-
-// 	this->lineartfm = NULL;
-// 	tmp = create_matrix(3, 3);
-// 	i = 0;
-// 	while (i < 3)
-// 	{
-// 		j = 0;
-// 		while (j < 3)
-// 		{
-// 			tmp->matrix[i][j] = this->fwd_tfm->matrix[i][j];
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	inverse_tmp = inverse(tmp);
-// 	this->lineartfm = transpose(inverse_tmp);
-// 	delete_matrix(tmp);
-// 	delete_matrix(inverse_tmp);
-// }
-
-// t_vec3	*get_norm(t_object *this, t_vec3 *input_vec3)
-// {
-// 	t_matrix	*tmp;
-// 	t_matrix	*resultmt;
-// 	t_vec3	*result;
-
-// 	resultmt = NULL;
-// 	tmp = matrix(3, 1, (double []){input_vec3->x, input_vec3->y,
-// 			input_vec3->z});
-// 	resultmt = mt_multiplication(this->lineartfm, tmp);
-// 	result = vector(resultmt->matrix[0][0], resultmt->matrix[1][0],
-// 			resultmt->matrix[2][0]);
-// 	delete_matrix(resultmt);
-// 	delete_matrix(tmp);
-// 	normalize(result);
-// 	return (result);
-// }

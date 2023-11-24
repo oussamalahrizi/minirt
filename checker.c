@@ -85,14 +85,14 @@ t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix)
 }
 
 
-t_vec3 *get_color_texture(t_vec2 *uvcoords, t_matrix *checker_matrix, t_data *image)
+t_vec3 *get_color_texture(t_vec2 *uvcoords, t_data *image)
 {
 	t_vec2 *inputvec = malloc(sizeof(t_vec2));
 
 	inputvec->x = uvcoords->x;
 	inputvec->y = uvcoords->y;
 
-	(void) checker_matrix;
+	
 	double u = (inputvec->x + 1) / 2.0;
 	double v = (inputvec->y + 1) / 2.0;
 	

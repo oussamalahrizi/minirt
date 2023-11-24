@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 09:04:10 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/11/17 00:46:26 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/11/23 09:29:59 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,4 +171,13 @@ void copy_vector_values(t_vec3 *vec1, t_vec3 *vec2)
 t_vec3 *reflect(t_vec3 *d, t_vec3 *normal)
 {
 	return normalized(vec3_sub(d, multiply_vec3_number(normal, 2.0f * dot_product(d, normal))));
+}
+
+t_vec3 *vec3_add_number(t_vec3 *vec, double num)
+{
+	t_vec3 *result = new_vector3(0,0,0);
+	result->x = vec->x + num;
+	result->y = vec->y + num;
+	result->z = vec->z + num;
+	return (result);
 }

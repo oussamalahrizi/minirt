@@ -7,12 +7,9 @@ static t_vec2 get_uvcoord(t_vec3 *intpoint)
 	double y = intpoint->y;
 	double z = intpoint->z;
 
-	double u = atan2(sqrtf(pow(x, 2) + pow(y, 2)) , z);
-	double v = atan2(y , x);
-	if (v < 0)
-		v += M_PI;
-	u /= M_PI;
-	v /= M_PI;
+	double u = atan2(y, x) / M_PI;
+	double v = 2.0 * (atan2(sqrtf(pow(x, 2.0) + pow(y, 2.0)), z) / M_PI) - 1.0;
+
 	return ((t_vec2) {u, v});
 }
 
