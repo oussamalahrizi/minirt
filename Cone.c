@@ -38,8 +38,8 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 		t[0] = (-b + delta) / (2 * a);
 		t[1] = (-b - delta) / (2 * a);
 	
-		poi[0] = vec3_add(back_ray->point1, multiply_vec3_number(vhat, t[0]));
-		poi[1] = vec3_add(back_ray->point1, multiply_vec3_number(vhat, t[1]));
+		poi[0] = vec3_add(back_ray->point1, scale_vector(vhat, t[0]));
+		poi[1] = vec3_add(back_ray->point1, scale_vector(vhat, t[1]));
 
 		if (t[0] > 0 && poi[0]->z > 0.0 && poi[0]->z < 1.0 )
 			t1valid = 1;
@@ -74,7 +74,7 @@ int test_cone(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localnormal
 	else
 	{
 		t[2] = (back_ray->point1->z - 1) / -vhat->z;
-		poi[2] = vec3_add(back_ray->point1, multiply_vec3_number(vhat, t[2]));
+		poi[2] = vec3_add(back_ray->point1, scale_vector(vhat, t[2]));
 
 		if (t[2] > 0 && sqrtf( pow(poi[2]->x, 2) + pow(poi[2]->y, 2) ) < 1.0)
 			t3valid = 1;

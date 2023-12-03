@@ -48,6 +48,7 @@ int main(void)
 	int x;
 	t_int_info info;
 	int y = 0;
+	t_vec3 *color;
 	while (y < HEIGHT)
 	{
 		printf("line : %d", y + 1);
@@ -62,20 +63,9 @@ int main(void)
 			int intfound = test_intersection(ray, objects, &info);
 			if (intfound)
 			{
-				if (info.closest_object->has_material == 1)
-				{
-					t_vec3 *color;
-					color = compute_color(objects, light_list, &info, ray, 0);
-					set_pixel(image, color, x, y);
-					free(color);
-				}
-				else
-				{
-					t_vec3 *color;
-					color = diffuse_color(objects, light_list, &info, info.closest_object->base_color);
-					set_pixel(image, color, x, y);
-					free(color);
-				}
+				color = compute_color(objects, light_list, &info, ray, 0);
+				set_pixel(image, color, x, y);
+				free(color);
 			}
 			x++;
 		}

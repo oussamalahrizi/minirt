@@ -11,29 +11,29 @@ void update_camera(t_camera *camera)
 	// calculate the position of the center point of the screen
 	// still dont understand this
 	// camera screen center = camera position + (camera length * camera alignement vector) 
-	camera->alignement_vec = multiply_vec3_number(camera->alignement_vec, camera->camera_length);
+	camera->alignement_vec = scale_vector(camera->alignement_vec, camera->camera_length);
 	camera->screen_center = vec3_add(camera->position, camera->alignement_vec);
 	// change the u and v vector to match the size and aspect ratio
 	// after calculating the u and v on our world coordinates we need to update
 	//them based on the parmeters given in the subject such as aspect ratio and
 	//the horizontal size (fov / 180)
-	camera->u = multiply_vec3_number(camera->u, camera->horizontal_size);
-	camera->v = multiply_vec3_number(camera->v, camera->horizontal_size / camera->aspectRatio);
+	camera->u = scale_vector(camera->u, camera->horizontal_size);
+	camera->v = scale_vector(camera->v, camera->horizontal_size / camera->aspectRatio);
 }
 
 t_ray *generate_ray(double x, double y, t_camera *camera)
 {
 	// world_part1 = camera->screen_center + (camera->u * x)
-	t_vec3 *world_part1 = vec3_add(camera->screen_center, multiply_vec3_number(camera->u, x));
+	t_vec3 *world_part1 = vec3_add(camera->screen_center, scale_vector(camera->u, x));
 	// screen_worldcoord = world_part1 + (camera->v * y)
-	t_vec3 *world_coord = vec3_add(world_part1, multiply_vec3_number(camera->v, y));
+	t_vec3 *world_coord = vec3_add(world_part1, scale_vector(camera->v, y));
 	t_ray *ray = new_ray(camera->position, world_coord);
 	return (ray);
 }
 
 void initialize_camera(t_camera *camera)
 {
-	camera->position = new_vector3(0, -2.0, -2.0);
+	camera->position = new_vector3(0, -2.0, -1.0);
 	camera->look_at = new_vector3(0, 0, 0);
 	camera->camera_up = new_vector3(0, 0, 1);
 	camera->camera_length = 1.0;

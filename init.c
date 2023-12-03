@@ -1,5 +1,26 @@
 #include "minirt.h"
 
+
+t_vec3 *get_rotation_vector(t_vec3 *normal)
+{
+    if (normal)
+    {
+        double y = atan2(normal->x, -normal->z);  // Notice the change here
+
+        // Calculate the angle of rotation around the x-axis
+        double cosAngleX = cos(y);
+        double sinAngleX = sin(y);
+        double x = atan2(-normal->y, normal->x * sinAngleX + normal->z * cosAngleX);
+
+        // Calculate the angle of rotation around the z-axis
+        double cosAngleZ = cos(y);
+        double sinAngleZ = sin(y);
+        double z = atan2(normal->y * cosAngleZ - normal->z * sinAngleZ, normal->x * cosAngleZ + normal->z * sinAngleZ);
+        return (new_vector3(x, y, z));
+    }
+    return (new_vector3(0, 0, 0));
+}
+
 void init_objects(t_object *objects)
 {
 
@@ -11,21 +32,19 @@ void init_objects(t_object *objects)
     objects[1].base_color = new_vector3(0.3, 0.3, 0.3);
     objects[1].mat_color = new_vector3(1.0, 1.0, 1.0);
     objects[1].translation = new_vector3(0.0, 0.0, 0);
-    objects[1].rotation = new_vector3(0.0, 0.0, 0.0);
-    objects[1].scale = new_vector3(10.0, 10.0, 10.0);
-    objects[1].has_material = 1;
+    objects[1].rotation = get_rotation_vector(new_vector3(0, 0 , 1));
+    objects[1].scale = new_vector3(1.0, 1.0, 1.0);
+    objects[1].has_material = 2;
     objects[1].has_texture = 2;
     objects[1].shininess = 10.0;
     objects[1].reflectivity = 0.01;
     objects[1].gtfm = set_transform(objects[1].translation, objects[1].rotation, objects[1].scale);
-    trans.x = 0;
-    trans.y = 0;
-    scale.x = 25;
-    scale.y = 25;
+    trans = (t_vec2) {0, 0};
+    scale = (t_vec2) {1, 1};
     objects[1].checker_matrix = set_transform_checker(&trans, &scale, 0);
     int w = 0, h = 0;
     objects[1].image = malloc(sizeof(t_data));
-    objects[1].image->img = mlx_xpm_file_to_image(mlx_ptr, "assets/textures/wall.xpm", &w, &h);
+    objects[1].image->img = mlx_xpm_file_to_image(mlx_ptr, "assets/textures/anime.xpm", &w, &h);
 
     objects[1].image->width = w;
     objects[1].image->height = h;
@@ -52,7 +71,7 @@ void init_objects(t_object *objects)
     objects[0].rotation = new_vector3(0.0, 0.0, 0.0);
     objects[0].scale = new_vector3(0.75, 0.75, 0.75);
     objects[0].has_material = 1;
-    objects[0].has_texture = 2;
+    objects[0].has_texture = 1;
     objects[0].shininess = 10;
     objects[0].reflectivity = 0.01;
     objects[0].gtfm = set_transform(objects[0].translation, objects[0].rotation, objects[0].scale);

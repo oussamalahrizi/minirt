@@ -34,9 +34,9 @@ int intersect_sphere(t_ray *ray, t_matrix **gtfm, t_vec3 *hitposition, t_vec3 *l
 		if (s1 < 0.0 || s2 < 0.0)
 			return (0);
 		if (s2 < s1)
-			intpoint = vec3_add(back_ray->point1, multiply_vec3_number(vhat, s2));
+			intpoint = vec3_add(back_ray->point1, scale_vector(vhat, s2));
 		else
-			intpoint = vec3_add(back_ray->point1, multiply_vec3_number(vhat, s1));
+			intpoint = vec3_add(back_ray->point1, scale_vector(vhat, s1));
 		t_vec3 *temp = apply_transform_vector(intpoint, FORWARD, gtfm);
 		copy_vector_values(hitposition, temp);
 		free(temp);

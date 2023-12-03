@@ -4,13 +4,13 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "mlx_linux/mlx.h"
+#include <mlx.h>
 #include <math.h>
 #include <stdio.h>
 #include <time.h>
 
-# define WIDTH 1280
-# define HEIGHT 720
+# define WIDTH 300
+# define HEIGHT 300
 # define FOV 75
 # define M_PI 3.14159265358979323846
 # define HALFPI 1.5708
@@ -150,7 +150,7 @@ t_vec3	*vec3_add(t_vec3 *vec1, t_vec3 *vec2);
 t_vec3 *vec3_add_number(t_vec3 *vec, double num);
 t_vec3 *negative_vec3(t_vec3 *vector);
 double max(double v1, double v2);
-t_vec3 *multiply_vec3_number(t_vec3 *vector, double number);
+t_vec3 *scale_vector(t_vec3 *vector, double number);
 void initialize_camera(t_camera *camera);
 t_ray *generate_ray(double x, double y, t_camera *camera);
 void update_camera(t_camera *camera);

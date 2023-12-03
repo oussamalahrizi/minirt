@@ -39,8 +39,8 @@ int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localno
 		t[0] = (-b + delta) / (2.0 * a);
 		t[1] = (-b - delta) / (2.0 * a);
 
-		poi[0] = vec3_add (back_ray->point1, multiply_vec3_number(vhat, t[0]));
-		poi[1] = vec3_add (back_ray->point1, multiply_vec3_number(vhat, t[1]));
+		poi[0] = vec3_add (back_ray->point1, scale_vector(vhat, t[0]));
+		poi[1] = vec3_add (back_ray->point1, scale_vector(vhat, t[1]));
 
 
 		// check if these values are valid
@@ -80,9 +80,9 @@ int test_cylinder(t_ray *ray, t_matrix **gtfm, t_vec3 *hitpoint, t_vec3 *localno
 		t[2] = (back_ray->point1->z - 1) / -vhat->z;
 		t[3] = (back_ray->point1->z + 1) / -vhat->z;
 		// compute the points of intersections
-		poi[2] = vec3_add (back_ray->point1, multiply_vec3_number(vhat, t[2]));
+		poi[2] = vec3_add (back_ray->point1, scale_vector(vhat, t[2]));
 
-		poi[3] = vec3_add (back_ray->point1, multiply_vec3_number(vhat, t[3]));
+		poi[3] = vec3_add (back_ray->point1, scale_vector(vhat, t[3]));
 		// check if this is valid
 
 		if (t[2] > 0.0 && sqrtf(pow(poi[2]->x, 2))

@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 09:04:10 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/11/23 09:29:59 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/02 22:16:12 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ double max(double v1, double v2)
 	return (v2);
 }
 
-t_vec3 *multiply_vec3_number(t_vec3 *vector, double number)
+t_vec3 *scale_vector(t_vec3 *vector, double number)
 {
 	t_vec3 *new;
 
@@ -170,7 +170,7 @@ void copy_vector_values(t_vec3 *vec1, t_vec3 *vec2)
 
 t_vec3 *reflect(t_vec3 *d, t_vec3 *normal)
 {
-	return normalized(vec3_sub(d, multiply_vec3_number(normal, 2.0f * dot_product(d, normal))));
+	return normalized(vec3_sub(d, scale_vector(normal, 2.0f * dot_product(d, normal))));
 }
 
 t_vec3 *vec3_add_number(t_vec3 *vec, double num)

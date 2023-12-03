@@ -73,7 +73,7 @@ t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix)
 	inputvec->x = uvcoords->x;
 	inputvec->y = uvcoords->y;
 	t_vec2 *new_location = apply_transform_checker(checker_matrix, inputvec);
-
+	
 	double newU = new_location->x;
 	double newV = new_location->y;
 
@@ -87,24 +87,22 @@ t_vec3 *get_color_checker(t_vec2 *uvcoords, t_matrix *checker_matrix)
 
 t_vec3 *get_color_texture(t_vec2 *uvcoords, t_data *image)
 {
-	t_vec2 *inputvec = malloc(sizeof(t_vec2));
-
-	inputvec->x = uvcoords->x;
-	inputvec->y = uvcoords->y;
+	
 
 	
-	double u = (inputvec->x + 1) / 2.0;
-	double v = (inputvec->y + 1) / 2.0;
+	double u = (uvcoords->x + 1) / 2.0;
+	double v = (uvcoords->y + 1) / 2.0;
+
 	
-	int width = image->width;
-	int height = image->height;
+	int width = image->width - 1;
+	int height = image->height - 1;
 	
 
 	int x = round(u * width);
 	int y = height - round(v * height);
 
-	x = ((x % width) + width) % width;
-	y = ((y % height) + height) % height;
+	// x = ((x % width) + width) % width;
+	// y = ((y % height) + height) % height;
 	
 	int pixel_index = (y * image->line_length) + (x * (image->bits_per_pixel / 8));
 	char *dst = image->addr + pixel_index;

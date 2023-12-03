@@ -61,5 +61,5 @@ void render(t_image *image, void *mlx, void *win)
         y++;
     }
     mlx_put_image_to_window(mlx, win, img_data.img, 0, 0);
-    mlx_destroy_image(mlx, img_data.img);
+    // mlx_destroy_image(mlx, img_data.img);
 }
