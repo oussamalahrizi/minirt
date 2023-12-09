@@ -77,16 +77,15 @@ unsigned int rgb_to_int(float red, float green, float blue, float max)
 	unsigned char b;
 	unsigned int value;
 
-	if (red > 1)
-		red = 1;
-	if (green > 1)
-		green = 1;
-	if (blue > 1)
-		blue = 1;
-	(void ) max;
-	r = (red) * 255.0f;
-	g = (green) * 255.0f;
-	b = (blue) * 255.0f;
+	// if (red > 1)
+	// 	red = 1;
+	// if (green > 1)
+	// 	green = 1;
+	// if (blue > 1)
+	// 	blue = 1;
+	r = (red / max) * 255.0;
+	g = (green / max) * 255.0;
+	b = (blue / max) * 255.0;
 
 	value = (r << 16) | (g << 8) | b;
 	return (value);

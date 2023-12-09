@@ -13,9 +13,9 @@ void	set_to_indentity(t_matrix *mt)
 		while (j < mt->cols)
 		{
 			if (i == j)
-				mt->matrix[i][j] = 1.0f;
+				mt->matrix[i][j] = 1.0;
 			else
-				mt->matrix[i][j] = 0.0f;
+				mt->matrix[i][j] = 0.0;
 			j++;
 		}
 		i++;

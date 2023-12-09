@@ -1,1 +1,0 @@
-# Not your typical raytracer

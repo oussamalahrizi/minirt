@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
+#include <time.h>
+#include <limits.h>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -120,6 +122,16 @@ typedef struct s_object
 	int  (*intersect)(t_ray*, struct s_info *);
 }	t_object;
 
+typedef struct s_vars
+{
+	void *mlx_ptr;
+	void *win_ptr;
+	t_image *image;
+	t_light *lights;
+	t_object *objects;
+	t_camera cam;
+	t_vec3 *buffer;
+}	t_vars;
 
 enum KEYCODES
 {
@@ -190,7 +202,7 @@ unsigned int rgb_to_int(float red, float green, float blue, float max);
 float max_overall(t_image *image);
 void render(t_image *image, void *mlx_ptr, void *win_ptr);
 void set_pixel(int x, int y, t_vec3 *color, t_image *image);
-void raytrace(t_image *image, t_light *lights, t_object *objects, t_camera *cam);
+void raytrace(t_vars *vars);
 t_light *init_light();
 t_object *init_objects();
 t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 *base_color);

@@ -3,15 +3,15 @@
 
 void init_camera(t_camera *cam)
 {
-	cam->origin = (t_vec3) {0, -5, -5};
+	cam->origin = (t_vec3) {-10, -10.0, -2};
 	cam->lookat = (t_vec3) {0, 0, 0};
 	cam->up_vector = (t_vec3) {0, 0, 1};
 
 	cam->aspect_ratio = (float) WIDTH / (float) HEIGHT;
-	cam->fov = 75;
-	float rad_fov = (cam->fov * M_PI) / 180.0f;
-	cam->focal_length = 1.f;
-	cam->hor_size = 2 * cam->focal_length * tan(rad_fov / 2.f);
+	cam->fov = 15;
+	float rad_fov = cam->fov * M_PI / 180.0;
+	cam->focal_length = 1.0;
+	cam->hor_size = 2.0 * cam->focal_length * tan(rad_fov / 2.0);
 	cam->cam_w = normalized(vec_sub(&cam->lookat, &cam->origin));
 	cam->cam_u = normalized(cross(&cam->cam_w, &cam->up_vector));
 	cam->cam_v = normalized(cross(&cam->cam_u, &cam->cam_w));

@@ -49,7 +49,7 @@ int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float 
 	validint = cast_ray(&lightray, obejcts, lighdist, info);
 	if (!validint)
 	{
-		*intensity = light->intensity * fmax(dot_product(&lighdir, &info->localnormal), 0.0f);
+		*intensity = light->intensity * fmax(dot_product(&lighdir, &info->localnormal), 0.0);
 		return (1);
 	}
 	else
@@ -77,8 +77,8 @@ t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 *b
 	green = 0.0;
 	blue = 0.0;
 	diff_color = new_vector(red, green, blue);
-	ambient = new_vector(0.3, 0.3, 0.3);
-	ambient = scale_vector(&ambient, 0.2f);
+	ambient = new_vector(1, 1, 1);
+	ambient = scale_vector(&ambient, 0.1f);
 	i = 0;
 	intensity = 0;
 	while (i < 1)

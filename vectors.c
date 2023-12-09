@@ -2,7 +2,7 @@
 
 float length2(t_vec3 *a)
 {
-	return ((a->x * a->x) + (a->y * a->y) + (a->z * a->z));
+	return (pow(a->x, 2) + pow(a->y, 2) + pow(a->z, 2));
 }
 
 float length(t_vec3 *a)
@@ -15,14 +15,12 @@ float normalize(t_vec3 *a)
 	float l;
 
 	l = length(a);
-	if (!l)
+	if (l != 0)
 	{
-		printf("normalize error\n");
-		exit(1);
+		a->x /= l;
+		a->y /= l;
+		a->z /= l;
 	}
-	a->x /= l;
-	a->y /= l;
-	a->z /= l;
 	return (l);
 }
 
@@ -30,14 +28,14 @@ t_vec3 normalized(t_vec3 a)
 {
 	t_vec3 new;
 
-	new = a;
+	copy_vec_values(&new, &a);
 	normalize(&new);
 	return (new);
 }
 
 float dot_product(t_vec3 *a, t_vec3 *b)
 {
-	return (a->x * b->x + a->y * b->y + a->z * b->z);
+	return ((a->x * b->x) + (a->y * b->y) + (a->z * b->z));
 }
 
 t_vec3 cross(t_vec3 *a, t_vec3 *b)

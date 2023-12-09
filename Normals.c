@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:17:41 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/05 18:00:11 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/09 04:08:49 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ t_vec3	helper(t_matrix *m, t_matrix *other)
 	tempdata = new_vector(new->matrix[0][0],
 			new->matrix[1][0], new->matrix[2][0]);
 	newnormal = normalized(tempdata);
-	// delete_matrix(m);
 	delete_matrix(new);
-	// delete_matrix(other);
 	return (newnormal);
 }
 

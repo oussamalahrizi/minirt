@@ -29,7 +29,7 @@ t_vec3	apply_transform_vector(t_vec3 *inputVector, int dirFlag, t_matrix **gtfm)
 	t_vec3	result;
 
 	resultmt = NULL;
-	values = (float []){inputVector->x, inputVector->y, inputVector->z, 1.0f};
+	values = (float []){inputVector->x, inputVector->y, inputVector->z, 1.0};
 	tmp = create_matrix(4, 1);
 	fill_mt(tmp, values);
 	if (dirFlag)
@@ -54,7 +54,7 @@ t_ray	apply_transform(t_ray *input_ray, t_matrix **gtfm, int dirFlag)
 
 	output.point1 = apply_transform_vector(&input_ray->point1, dirFlag, gtfm);
 	output.point2 = apply_transform_vector(&input_ray->point2, dirFlag, gtfm);
-	output = new_ray(output.point1, output.point2);
+	output.dir = vec_sub(&output.point2, &output.point1);
 	return (output);
 }
 
