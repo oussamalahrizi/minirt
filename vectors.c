@@ -85,22 +85,10 @@ t_vec3 get_rotation_vector(t_vec3 *normal)
 {
     if (normal)
     {
-        double y = atan2(normal->x, -normal->z);
-
-        double cosAngleX = cos(y);
-        double sinAngleX = sin(y);
-        double x = atan2(-normal->y, normal->x * sinAngleX + normal->z * cosAngleX);
-
-        double cosAngleZ = cos(y);
-        double sinAngleZ = sin(y);
-        double z = atan2(normal->y * cosAngleZ - normal->z * sinAngleZ, normal->x * cosAngleZ + normal->z * sinAngleZ);
-		if (normal->x < 0)
-			x *= -1;
-		if (normal->y < 0)
-			y *= -1;
-		if (normal->z < 0)
-			z *= -1;
-        return (new_vector(x, y, z));
+        float x = atan2(normal->y, -normal->z);
+    	float y = atan2(-normal->x, sqrtf(square(normal->y) + square(normal->z)));
+    	float z = atan2(normal->x, normal->y);
+		return (new_vector(x, y, z));
     }
     return (new_vector(0, 0, 0));
 }
