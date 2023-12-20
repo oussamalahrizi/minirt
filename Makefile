@@ -1,6 +1,6 @@
 NAME = minirt
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast -g3
+CFLAGS = -Wall -Wextra  -Ofast -g3
 LDFLAGS = -lmlx -lXext -lX11 -lm -lz
 
 SRCS =	camera.c \
@@ -22,23 +22,24 @@ SRCS =	camera.c \
 		Objects/Plane.c \
 		Objects/Cylinder.c \
 		Objects/Cylinder_utils.c \
-		Materials/Diffuse.c 
+		Materials/Diffuse.c \
+		free_utils.c
 
 OBJS = $(SRCS:.c=.o)
 
 all : $(NAME)
 
 %.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
 
 clean :
-	rm -rf $(OBJS)
+	@rm -rf $(OBJS)
 
 fclean : clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 re : fclean all
 

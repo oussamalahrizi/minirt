@@ -1,43 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/20 23:06:24 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/20 23:07:37 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
-
-
-
-
-void free_objects(t_object *objects)
-{
-	int i;
-
-	i = 0;
-	while (i < 3)
-	{
-		if (objects[i].type == SPHERE || objects[i].type == CYLINDER)
-		{
-			delete_matrix(objects[i].gtfm[0]);
-			delete_matrix(objects[i].gtfm[1]);
-			free(objects[i].gtfm);
-		}
-		i++;
-	}
-	free(objects);
-}
-
-void free_image(t_image *image)
-{
-	int i;
-
-	i = 0;
-	while (i < HEIGHT)
-	{
-		free(image->red[i]);
-		free(image->green[i]);
-		free(image->blue[i]);
-		i++;
-	}
-	free(image->red);
-	free(image->green);
-	free(image->blue);
-	free(image);
-}
 
 int handle_exit(t_vars *vars)
 {
@@ -60,6 +33,8 @@ int key_hook(int keycode, t_vars *vars)
 
 int loop(t_vars *vars)
 {
+	if (vars->frames == 120)
+		return (0);
  	raytrace(vars);
 	render(vars->image, vars->mlx_ptr, vars->win_ptr);
 	return (0);
@@ -75,7 +50,9 @@ int main(void)
 	vars.image = new_image();
 	vars.lights = init_light();
 	vars.objects = init_objects();
-	vars.buffer = calloc(HEIGHT * WIDTH, sizeof(t_vec3));
+	vars.buffer = ft_calloc(HEIGHT * WIDTH, sizeof(t_vec3));
+	vars.frames = 0;
+	vars.rng_state = 0;
 	mlx_loop_hook(vars.mlx_ptr, loop, &vars);
 	mlx_hook(vars.win_ptr, 2, 1L << 0, key_hook, &vars);
 	mlx_hook(vars.win_ptr, 17, 0, handle_exit, &vars);

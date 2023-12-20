@@ -9,7 +9,6 @@ int test_intersection(t_object *objects, t_ray *ray, t_info *info)
 	int validint;
 	int intfound;
 	t_info test;
-	t_vec3 t;
 
 	i = 0;
 	mindist = 1e6;
@@ -22,8 +21,7 @@ int test_intersection(t_object *objects, t_ray *ray, t_info *info)
 		if (validint)
 		{
 			intfound = 1;
-			t = vec_sub(&test.hitpoint, &ray->point1);
-			dist = normalize(&t);
+			dist = length(vec_sub(test.hitpoint, ray->point1));
 			if (dist < mindist)
 			{
 				mindist = dist;
@@ -66,10 +64,8 @@ void raytrace(t_vars *vars)
 	float normy;
 	t_info info;
 	t_vec3 color;
-	static int frame;
-	static unsigned int rng_state;
-	rng_state += frame >> 16;
-	frame++;
+	vars->frames++;
+	vars->rng_state = vars->frames;
 	y = 0;
 	xfact = 1.0 / ((float)(WIDTH) / 2.0);
 	yfact = 1.0 / ((float)(HEIGHT) / 2.0);
@@ -78,8 +74,8 @@ void raytrace(t_vars *vars)
 		x = 0;
 		while (x < WIDTH)
 		{
-			float xOffset = random_float(&rng_state, -0.5, 0.5);
-			float yOffset = random_float(&rng_state, -0.5, 0.5);
+			float xOffset = random_float(&vars->rng_state, -0.5, 0.5);
+			float yOffset = random_float(&vars->rng_state, -0.5, 0.5);
 			normx = ((float)(x + xOffset)* xfact) - 1.0;
 			normy = ((float)(y + yOffset)* yfact) - 1.0;
 			ray = generate_ray(normx, normy, &vars->cam);
@@ -87,13 +83,13 @@ void raytrace(t_vars *vars)
 			if (intfound)
 			{
 				color = diffuse_color(vars->objects, &info, vars->lights, &info.e->base_color);
-				vars->buffer[y * WIDTH + x] = vec_add(&vars->buffer[y * WIDTH + x], &color);
-				color = scale_vector(&vars->buffer[y * WIDTH + x], 1.0 / frame);
+				vars->buffer[y * WIDTH + x] = vec_add(vars->buffer[y * WIDTH + x], color);
+				color = scale_vector(vars->buffer[y * WIDTH + x], (float)1.0 / (float)vars->frames);
 				set_pixel(x, y, &color, vars->image);
 			}
 			x++;
 		}
 		y++;
 	}
-	printf("frame : %d\n", frame);
+	printf("frame : %d\n", vars->frames);
 }

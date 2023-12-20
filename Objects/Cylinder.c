@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 19:23:06 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/07 22:15:18 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:12:28 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int get_t2(t_ray *back_ray, t_vec3 *vhat, float *t, t_vec3 *poi)
 	t_vec3 p;
 	
 	p = back_ray->point1;
-	a = square(vhat->x) +square(vhat->y);
+	a = square(vhat->x) + square(vhat->y);
 	b = 2.0 * (p.x * vhat->x + p.y * vhat->y);
 	c = square(p.x) + square(p.y) - 1.0;
 	delta = sqrtf(square(b) - (4.0 * a * c));
@@ -35,10 +35,8 @@ int get_t2(t_ray *back_ray, t_vec3 *vhat, float *t, t_vec3 *poi)
 	{
 		t[0] = (-b + delta) / (2.0f * a);
 		t[1] = (-b - delta) / (2.0f * a);
-		poi[0] = scale_vector(vhat, t[0]);
-		poi[0] = vec_add(&back_ray->point1, &poi[0]);
-		poi[1] = scale_vector(vhat, t[1]);
-		poi[1] = vec_add(&back_ray->point1, &poi[1]);
+		poi[0] = vec_add(back_ray->point1, scale_vector(*vhat, t[0]));
+		poi[1] = vec_add(back_ray->point1, scale_vector(*vhat, t[1]));
 		return (1);
 	}
 	return (0);
@@ -73,10 +71,8 @@ void get_distance2(t_ray *back_ray, t_vec3 *vhat, float *t, t_vec3 *poi, float t
 	}
 	t[2] = (back_ray->point1.z - 1) / -vhat->z;
 	t[3] = (back_ray->point1.z + 1) / -vhat->z;
-	poi[2] = scale_vector(vhat, t[2]);
-	poi[2] = vec_add(&back_ray->point1, &poi[2]);
-	poi[3] = scale_vector(vhat, t[3]);
-	poi[3] = vec_add(&back_ray->point1, &poi[3]);
+	poi[2] = vec_add(back_ray->point1, scale_vector(*vhat, t[2]));
+	poi[3] = vec_add(back_ray->point1,scale_vector(*vhat, t[3]));
 
 	if (!(t[2] > 0.0 && sqrtf(square(poi[2].x) + square(poi[2].y)) < 1.0))
 		t[2] = 100e6;
@@ -118,7 +114,7 @@ int test_cylinder(t_ray *ray, t_info *info)
 	t_vec3 validpoi;
 
 	back_ray = apply_transform(ray, info->e->gtfm, BACKWARD);
-	vhat = normalized(back_ray.dir);
+	vhat = back_ray.dir;
 	t2 = get_distance(&back_ray, &vhat, t, poi);
 	get_distance2(&back_ray, &vhat, t, poi, t2);
 	min_index = 0;

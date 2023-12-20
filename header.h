@@ -7,6 +7,7 @@
 #include <math.h>
 #include <float.h>
 #include <time.h>
+#include <stdint.h>
 #include <limits.h>
 
 #define WIDTH 800
@@ -131,6 +132,8 @@ typedef struct s_vars
 	t_object *objects;
 	t_camera cam;
 	t_vec3 *buffer;
+	unsigned int rng_state;
+	int frames;
 }	t_vars;
 
 enum KEYCODES
@@ -146,22 +149,20 @@ enum KEYCODES
 
 
 
-
 // vectors
 float square(float x);
-float length(t_vec3 *a);
-float normalize(t_vec3 *a);
+float length(t_vec3 a);
 t_vec3 normalized(t_vec3 a);
-float dot_product(t_vec3 *a, t_vec3 *b);
-t_vec3 cross(t_vec3 *a, t_vec3 *b);
-t_vec3 scale_vector(t_vec3 *a, float t);
-t_vec3 vec_sub(t_vec3 *a, t_vec3 *b);
-t_vec3 vec_add(t_vec3 *a, t_vec3 *b);
+float dot_product(t_vec3 a, t_vec3 b);
+t_vec3 cross(t_vec3 a, t_vec3 b);
+t_vec3 scale_vector(t_vec3 a, float t);
+t_vec3 vec_sub(t_vec3 a, t_vec3 b);
+t_vec3 vec_add(t_vec3 a, t_vec3 b);
 t_vec3 new_vector(float x, float y, float z);
 void copy_vec_values(t_vec3 *a, t_vec3 *b);
-t_vec3 reflect(t_vec3 *d, t_vec3 *normal);
-t_vec3 get_rotation_vector(t_vec3 *normal);
-t_vec3 get_up_vector(t_vec3 *forward);
+t_vec3 reflect(t_vec3 d, t_vec3 normal);
+t_vec3 get_rotation_vector(t_vec3 normal);
+t_vec3 get_up_vector(t_vec3 forward);
 void print_vector(t_vec3 a);
 // matrices
 void fill_mt(t_matrix *mt, float *values);
@@ -189,7 +190,7 @@ t_matrix	*rotation_matrix_z(double angle);
 t_matrix	*translation_matrix(t_vec3 *translation);
 t_matrix	*scal_matrix(t_vec3 *scal);
 t_matrix	**set_transform(t_vec3 *translation, t_vec3 *rotation, t_vec3 *scal);
-t_vec3	apply_transform_vector(t_vec3 *inputVector, int dirFlag, t_matrix **gtfm);
+t_vec3	apply_transform_vector(t_vec3 inputVector, int dirFlag, t_matrix **gtfm);
 t_ray	apply_transform(t_ray *input_ray, t_matrix **gtfm, int dirFlag);
 // fixed normal
 t_vec3	fixed_normal(t_matrix *forward, t_vec3 *hitpoint);
@@ -208,4 +209,8 @@ t_object *init_objects();
 t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 *base_color);
 int calculate_props(int min_index, t_vec3 *poi, t_info *info, t_vec3 *vhat);
 int test_cylinder(t_ray *ray, t_info *info);
+// other utils
+void	*ft_calloc(size_t nelem, size_t elsize);
+void free_objects(t_object *objects);
+void free_image(t_image *image);
 #endif

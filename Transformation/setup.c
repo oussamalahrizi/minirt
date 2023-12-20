@@ -6,10 +6,10 @@ t_matrix	*rotation_matrix_y(double angle)
 
 	rotationmatrix = create_matrix(4, 4);
 	set_to_indentity(rotationmatrix);
-	rotationmatrix->matrix[0][0] = cos(angle);
-	rotationmatrix->matrix[0][2] = sin(angle);
-	rotationmatrix->matrix[2][0] = -sin(angle);
-	rotationmatrix->matrix[2][2] = cos(angle);
+	rotationmatrix->matrix[0][0] = cosf(angle);
+	rotationmatrix->matrix[0][2] = sinf(angle);
+	rotationmatrix->matrix[2][0] = -sinf(angle);
+	rotationmatrix->matrix[2][2] = cosf(angle);
 	return (rotationmatrix);
 }
 
@@ -19,10 +19,10 @@ t_matrix	*rotation_matrix_x(double angle)
 
 	rotationmatrix = create_matrix(4, 4);
 	set_to_indentity(rotationmatrix);
-	rotationmatrix->matrix[1][1] = cos(angle);
-	rotationmatrix->matrix[1][2] = -sin(angle);
-	rotationmatrix->matrix[2][1] = sin(angle);
-	rotationmatrix->matrix[2][2] = cos(angle);
+	rotationmatrix->matrix[1][1] = cosf(angle);
+	rotationmatrix->matrix[1][2] = -sinf(angle);
+	rotationmatrix->matrix[2][1] = sinf(angle);
+	rotationmatrix->matrix[2][2] = cosf(angle);
 	return (rotationmatrix);
 }
 
@@ -32,10 +32,10 @@ t_matrix	*rotation_matrix_z(double angle)
 
 	rotationmatrix = create_matrix(4, 4);
 	set_to_indentity(rotationmatrix);
-	rotationmatrix->matrix[0][0] = cos(angle);
-	rotationmatrix->matrix[0][1] = -sin(angle);
-	rotationmatrix->matrix[1][0] = sin(angle);
-	rotationmatrix->matrix[1][1] = cos(angle);
+	rotationmatrix->matrix[0][0] = cosf(angle);
+	rotationmatrix->matrix[0][1] = -sinf(angle);
+	rotationmatrix->matrix[1][0] = sinf(angle);
+	rotationmatrix->matrix[1][1] = cosf(angle);
 	return (rotationmatrix);
 }
 
