@@ -6,16 +6,15 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 23:06:24 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/20 23:07:37 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/30 21:49:16 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-int handle_exit(t_vars *vars)
+int	handle_exit(t_vars *vars)
 {
-	free_objects(vars->objects);
-	free(vars->lights);
+	free_objects(vars);
 	free_image(vars->image);
 	mlx_destroy_window(vars->mlx_ptr, vars->win_ptr);
 	mlx_destroy_display(vars->mlx_ptr);
@@ -24,32 +23,35 @@ int handle_exit(t_vars *vars)
 	return (0);
 }
 
-int key_hook(int keycode, t_vars *vars)
+int	key_hook(int keycode, t_vars *vars)
 {
 	if (keycode == KEYCODE_ESC)
 		handle_exit(vars);
 	return (0);
 }
 
-int loop(t_vars *vars)
+int	loop(t_vars *vars)
 {
 	if (vars->frames == 120)
 		return (0);
- 	raytrace(vars);
+	raytrace(vars);
 	render(vars->image, vars->mlx_ptr, vars->win_ptr);
 	return (0);
 }
 
-int main(void)
+int	main(int ac, char **av)
 {
-	t_vars vars;
+	t_vars	vars;
 
 	vars.mlx_ptr = mlx_init();
-	vars.win_ptr = mlx_new_window(vars.mlx_ptr, WIDTH, HEIGHT, "Raytracing goes prr");
+	vars.win_ptr = mlx_new_window(vars.mlx_ptr,
+			WIDTH, HEIGHT, "miniRT");
+	parse(ac, av, &vars);
+	vars.parse.ambient_light.rgb = scale_vector(vars.parse.ambient_light.rgb,
+			vars.parse.ambient_light.ambient_ratio);
+	prepare_objects(&vars);
 	init_camera(&vars.cam);
 	vars.image = new_image();
-	vars.lights = init_light();
-	vars.objects = init_objects();
 	vars.buffer = ft_calloc(HEIGHT * WIDTH, sizeof(t_vec3));
 	vars.frames = 0;
 	vars.rng_state = 0;

@@ -1,51 +1,63 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Diffuse.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/30 21:39:40 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 21:48:33 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header.h"
 
-
-static int cast_ray(t_ray *lightray, t_object *objects, float lighdist, t_info *info)
+static int	cast_ray(t_ray *lightray, t_vars *vars,
+		float lighdist, t_info *info)
 {
-	int i;
-	int validint;
-	float dist;
-	t_info test;
+	int		i;
+	int		validint;
+	float	dist;
+	t_info	test;
 
 	i = 0;
 	validint = 0;
-	while (i < 3)
+	while (i < vars->obj_count)
 	{
-		if (info->e == &objects[i])
+		if (info->e != &vars->objects[i])
 		{
-			i++;
-			continue;
+			test.e = &vars->objects[i];
+			validint = vars->objects[i].intersect(lightray, &test);
+			if (validint)
+			{
+				dist = length(vec_sub(test.hitpoint, info->hitpoint));
+				if (dist > lighdist)
+					validint = 0;
+			}
+			if (validint)
+				break ;
 		}
-		test.e = &objects[i];
-		validint = objects[i].intersect(lightray, &test);
-		if (validint)
-		{
-			dist = length(vec_sub(test.hitpoint, info->hitpoint));
-			if (dist > lighdist)
-				validint = 0;
-		}
-		if (validint)
-			break;
 		i++;
 	}
 	return (validint);
 }
 
-int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float *intensity)
+int	compute_illimunation(t_light *light, t_info *info,
+		t_vars *vars, float *intensity)
 {
-	t_vec3 lighdir;
-	t_ray lightray;
-	float lighdist;
-	int validint;
+	t_vec3	lighdir;
+	t_ray	lightray;
+	float	lighdist;
+	int		validint;
 
 	lighdir = normalized(vec_sub(light->position, info->hitpoint));
 	lighdist = length(vec_sub(light->position, info->hitpoint));
 	lightray = new_ray(info->hitpoint, vec_add(info->hitpoint, lighdir));
-	validint = cast_ray(&lightray, obejcts, lighdist, info);
+	validint = cast_ray(&lightray, vars, lighdist, info);
 	if (!validint)
 	{
-		*intensity = light->intensity * fmax(dot_product(lighdir, info->localnormal), 0.0);
+		*intensity = light->intensity * fmax(dot_product(lighdir,
+					info->localnormal), 0.0);
 		return (1);
 	}
 	else
@@ -56,45 +68,41 @@ int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float 
 	return (0);
 }
 
-t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 *base_color)
+static void	loop(t_diff *diff, t_info *info, t_vars *vars)
 {
-	int i;
-	float red;
-	float green;
-	float blue;
-	int validillum;
-	int illumfound;
-	t_vec3 ambient;
-	t_vec3 diff_color;
-	float intensity;
+	int	i;
 
-	illumfound = 0;
-	red = 0.0;
-	green = 0.0;
-	blue = 0.0;
-	diff_color = new_vector(red, green, blue);
-	ambient = new_vector(1, 1, 1);
-	ambient = scale_vector(ambient, 0.1f);
 	i = 0;
-	intensity = 0;
 	while (i < 1)
 	{
-		validillum = compute_illimunation(&lights[i], info, objects, &intensity);
-		if (validillum)
+		diff->validillum = compute_illimunation(&vars->lights[i],
+				info, vars, &diff->intensity);
+		if (diff->validillum)
 		{
-			illumfound = 1;
-			red += lights[i].color.x * intensity;
-			green += lights[i].color.y * intensity;
-			blue += lights[i].color.z * intensity;
+			diff->illumfound = 1;
+			diff->red += vars->lights[i].color.x * diff->intensity;
+			diff->green += vars->lights[i].color.y * diff->intensity;
+			diff->blue += vars->lights[i].color.z * diff->intensity;
 		}
 		i++;
 	}
-	if (illumfound)
+}
+
+t_vec3	diffuse_color(t_info *info, t_vars *vars, t_vec3 *base_color)
+{
+	t_diff	diff;
+
+	diff.illumfound = 0;
+	diff.red = 0.0;
+	diff.green = 0.0;
+	diff.blue = 0.0;
+	diff.diff_color = new_vector(diff.red, diff.green, diff.blue);
+	diff.intensity = 0;
+	loop(&diff, info, vars);
+	if (diff.illumfound)
 	{
-		diff_color = new_vector(red * base_color->x,
-								green * base_color->y,
-			 					blue * base_color->z);
+		diff.diff_color = new_vector(diff.red * base_color->x,
+				diff.green * base_color->y, diff.blue * base_color->z);
 	}
-	diff_color = vec_add(diff_color, ambient);
-	return (diff_color);
+	return (diff.diff_color);
 }

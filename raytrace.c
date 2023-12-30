@@ -1,95 +1,94 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raytrace.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/25 11:50:49 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 21:54:08 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-
-int test_intersection(t_object *objects, t_ray *ray, t_info *info)
+void	test_helper(t_info *info, t_int *vars, t_ray *ray)
 {
-	int i;
-	float dist;
-	float mindist;
-	int validint;
-	int intfound;
-	t_info test;
-
-	i = 0;
-	mindist = 1e6;
-	intfound = 0;
-	validint = 0;
-	while (i < 3)
+	if (vars->validint)
 	{
-		test.e = &objects[i];
-		validint = objects[i].intersect(ray, &test);
-		if (validint)
+		vars->intfound = 1;
+		vars->dist = length(vec_sub(vars->test.hitpoint, ray->point1));
+		if (vars->dist < vars->mindist)
 		{
-			intfound = 1;
-			dist = length(vec_sub(test.hitpoint, ray->point1));
-			if (dist < mindist)
-			{
-				mindist = dist;
-				info->e = test.e;
-				info->hitpoint = test.hitpoint;
-				info->localnormal = test.localnormal;
-			}
+			vars->mindist = vars->dist;
+			info->e = vars->test.e;
+			info->hitpoint = vars->test.hitpoint;
+			info->localnormal = vars->test.localnormal;
 		}
-		i++;
 	}
-	return (intfound);
 }
 
-unsigned int	rand_pcg(unsigned int *rng_state)
+int	test_intersection(t_object *objects, t_ray *ray, t_info *info, int count)
 {
-	unsigned int		state;
-	unsigned int		word;
+	t_int	vars;
 
-	state = *rng_state;
-	*rng_state = state * 747796405u + 2891336453u;
-	word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-	return ((word >> 22u) ^ word);
+	vars.i = 0;
+	vars.mindist = 1e6;
+	vars.intfound = 0;
+	vars.validint = 0;
+	while (vars.i < count)
+	{
+		vars.test.e = &objects[vars.i];
+		vars.validint = objects[vars.i].intersect(ray, &(vars.test));
+		test_helper(info, &vars, ray);
+		vars.i++;
+	}
+	return (vars.intfound);
 }
 
-float	random_float(unsigned int *rng_state, float min, float max)
+void	raytrace_helper(t_rt *local, t_vars *vars)
 {
-	return (min + (rand_pcg(rng_state) * (1.0 / UINT_MAX)
-		) * (max - min));
+	float	x_offset;
+	float	y_offset;
+
+	x_offset = random_float(&vars->rng_state, -0.5, 0.5);
+	y_offset = random_float(&vars->rng_state, -0.5, 0.5);
+	local->normx = ((float)(local->x + x_offset) * local->xfact) - 1.0;
+	local->normy = ((float)(local->y + y_offset) * local->yfact) - 1.0;
+	local->ray = generate_ray(local->normx, local->normy, &vars->cam);
+	local->intfound = test_intersection(vars->objects,
+			&local->ray, &local->info, vars->obj_count);
+	if (local->intfound)
+	{
+		local->color = diffuse_color(&local->info, vars,
+				&local->info.e->base_color);
+		local->color = vec_add(local->color, vars->parse.ambient_light.rgb);
+		vars->buffer[local->y * WIDTH + local->x] = vec_add(
+				vars->buffer[local->y * WIDTH + local->x], local->color);
+		local->color = scale_vector(vars->buffer[local->y * WIDTH + local->x],
+				(float)1.0 / (float)vars->frames);
+		set_pixel(local->x, local->y, &local->color, vars->image);
+	}
 }
 
-void raytrace(t_vars *vars)
+void	raytrace(t_vars *vars)
 {
-	int x;
-	int y;
-	int intfound;
-	t_ray ray;
-	float xfact;
-	float yfact;
-	float normx;
-	float normy;
-	t_info info;
-	t_vec3 color;
+	t_rt	local;
+
 	vars->frames++;
 	vars->rng_state = vars->frames;
-	y = 0;
-	xfact = 1.0 / ((float)(WIDTH) / 2.0);
-	yfact = 1.0 / ((float)(HEIGHT) / 2.0);
-	while (y < HEIGHT)
+	local.y = 0;
+	local.xfact = 1.0 / ((float)(WIDTH) / 2.0);
+	local.yfact = 1.0 / ((float)(HEIGHT) / 2.0);
+	while (local.y < HEIGHT)
 	{
-		x = 0;
-		while (x < WIDTH)
+		local.x = 0;
+		while (local.x < WIDTH)
 		{
-			float xOffset = random_float(&vars->rng_state, -0.5, 0.5);
-			float yOffset = random_float(&vars->rng_state, -0.5, 0.5);
-			normx = ((float)(x + xOffset)* xfact) - 1.0;
-			normy = ((float)(y + yOffset)* yfact) - 1.0;
-			ray = generate_ray(normx, normy, &vars->cam);
-			intfound = test_intersection(vars->objects, &ray, &info);
-			if (intfound)
-			{
-				color = diffuse_color(vars->objects, &info, vars->lights, &info.e->base_color);
-				vars->buffer[y * WIDTH + x] = vec_add(vars->buffer[y * WIDTH + x], color);
-				color = scale_vector(vars->buffer[y * WIDTH + x], (float)1.0 / (float)vars->frames);
-				set_pixel(x, y, &color, vars->image);
-			}
-			x++;
+			raytrace_helper(&local, vars);
+			local.x++;
 		}
-		y++;
+		local.y++;
 	}
 	printf("frame : %d\n", vars->frames);
 }

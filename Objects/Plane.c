@@ -1,24 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Plane.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/25 12:22:05 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 18:12:10 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header.h"
 
-
-
-int test_plane(t_ray *ray, t_info *info)
+int	test_plane(t_ray *ray, t_info *info)
 {
-	float d;
-	t_vec3 axis;
-	t_vec3 vhat;
-	t_vec3 origin;
-	float denom;
-	float t;
+	t_vec3	axis;
+	t_vec3	vhat;
+	t_vec3	origin;
+	float	denom;
+	float	t;
 
 	origin = info->e->translation;
-	axis = normalized(info->e->d_normal);
 	vhat = ray->dir;
-	d = -dot_product(origin, axis);
+	axis = info->e->d_normal;
 	denom = dot_product(axis, vhat);
 	if (fabs(denom) < EPSILON)
 		return (0);
-	t = (-d - dot_product(ray->point1, axis)) / denom;
+	t = (dot_product(origin, axis) - dot_product(ray->point1, axis)) / denom;
 	if (t < EPSILON)
 		return (0);
 	info->localnormal = axis;

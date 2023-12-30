@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   matrix.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/25 12:34:48 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/25 12:35:56 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header.h"
 
 void	set_to_indentity(t_matrix *mt)
@@ -45,7 +57,6 @@ void	print_matrix(t_matrix *matrix)
 	}
 	printf("]\n");
 }
-
 
 t_matrix	*transpose(t_matrix *mt)
 {

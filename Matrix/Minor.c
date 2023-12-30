@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Minor.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/25 12:34:38 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/25 12:35:42 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header.h"
 
-void copy_clmn(float *clm1, float *clm2, int column, int size)
+void	copy_clmn(float *clm1, float *clm2, int column, int size)
 {
-	int j;
-	int fci;
+	int	j;
+	int	fci;
 
 	j = 0;
 	fci = 0;
@@ -18,11 +30,11 @@ void copy_clmn(float *clm1, float *clm2, int column, int size)
 	}
 }
 
-t_matrix *submatrix(t_matrix *mt, int row, int column)
+t_matrix	*submatrix(t_matrix *mt, int row, int column)
 {
-	int i;
-	int fri;
-	t_matrix *new_matrix;
+	int			i;
+	int			fri;
+	t_matrix	*new_matrix;
 
 	if (mt->rows <= 1 || mt->cols <= 1)
 		return (mt);
@@ -34,7 +46,7 @@ t_matrix *submatrix(t_matrix *mt, int row, int column)
 		if (i == row)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		copy_clmn(new_matrix->matrix[fri], mt->matrix[i], column, mt->cols);
 		fri++;
@@ -43,10 +55,10 @@ t_matrix *submatrix(t_matrix *mt, int row, int column)
 	return (new_matrix);
 }
 
-float minor(t_matrix *mt, int row, int column)
+float	minor(t_matrix *mt, int row, int column)
 {
-	t_matrix *sub;
-	float m_determinant;
+	t_matrix	*sub;
+	float		m_determinant;
 
 	sub = submatrix(mt, row, column);
 	m_determinant = determinant(sub);

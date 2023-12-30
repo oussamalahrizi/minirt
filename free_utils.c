@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 23:01:21 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/20 23:25:23 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/30 21:54:43 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	*ft_calloc(size_t nelem, size_t elsize)
 {
 	void	*result;
-	size_t i;
+	size_t	i;
+
 	if (nelem && elsize > SIZE_MAX / nelem)
 		return (0);
 	result = malloc(nelem * elsize);
@@ -27,27 +28,28 @@ void	*ft_calloc(size_t nelem, size_t elsize)
 	return (result);
 }
 
-void free_objects(t_object *objects)
+void	free_objects(t_vars *vars)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while (i < 3)
+	while (i < vars->obj_count)
 	{
-		if (objects[i].type == SPHERE || objects[i].type == CYLINDER)
+		if (vars->objects[i].type == SPHERE
+			|| vars->objects[i].type == CYLINDER)
 		{
-			delete_matrix(objects[i].gtfm[0]);
-			delete_matrix(objects[i].gtfm[1]);
-			free(objects[i].gtfm);
+			delete_matrix(vars->objects[i].gtfm[0]);
+			delete_matrix(vars->objects[i].gtfm[1]);
+			free(vars->objects[i].gtfm);
 		}
 		i++;
 	}
-	free(objects);
+	free(vars->objects);
 }
 
-void free_image(t_image *image)
+void	free_image(t_image *image)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < HEIGHT)

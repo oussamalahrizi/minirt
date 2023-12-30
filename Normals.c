@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 03:17:41 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/09 04:08:49 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/25 10:10:59 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,6 @@ t_vec3	fixed_normal(t_matrix *forward, t_vec3 *hitpoint)
 			j++;
 		}
 		i++;
-	}		
+	}
 	return (helper(m, new));
 }
