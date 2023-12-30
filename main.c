@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 23:06:24 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/30 21:49:16 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/12/30 22:05:41 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ int	main(int ac, char **av)
 {
 	t_vars	vars;
 
+	parse(ac, av, &vars);
 	vars.mlx_ptr = mlx_init();
 	vars.win_ptr = mlx_new_window(vars.mlx_ptr,
 			WIDTH, HEIGHT, "miniRT");
-	parse(ac, av, &vars);
 	vars.parse.ambient_light.rgb = scale_vector(vars.parse.ambient_light.rgb,
 			vars.parse.ambient_light.ambient_ratio);
 	prepare_objects(&vars);
