@@ -1,19 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Minor.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/16 04:42:23 by aaitouna          #+#    #+#             */
-/*   Updated: 2023/11/15 04:01:56 by olahrizi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "../header.h"
 
-
-#include "../minirt.h"
-
-void copy_clmn(double *clm1, double *clm2, int column, int size)
+void copy_clmn(float *clm1, float *clm2, int column, int size)
 {
 	int j;
 	int fci;
@@ -56,10 +43,10 @@ t_matrix *submatrix(t_matrix *mt, int row, int column)
 	return (new_matrix);
 }
 
-double minor(t_matrix *mt, int row, int column)
+float minor(t_matrix *mt, int row, int column)
 {
 	t_matrix *sub;
-	double m_determinant;
+	float m_determinant;
 
 	sub = submatrix(mt, row, column);
 	m_determinant = determinant(sub);
