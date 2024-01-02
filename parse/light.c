@@ -59,15 +59,16 @@ void	light_intensity_color(char **line, t_vars *vars, int *i)
 		msg_exit_free("parsing light infos\n", 1, vars);
 }
 
-void	parse_light(char **line, t_vars *vars)
+void	parse_light(char **line, t_vars *vars, int index)
 {
 	int	i;
 
 	i = 1;
-	if (ft_tablen(line) != 3)
+	if (ft_tablen(line) != 4)
 		msg_exit_free("parsing light infos\n", 1, vars);
 	light_position(line, vars, &i);
 	light_intensity_color(line, vars, &i);
 	if (!light_error_check(&(vars->parse.light)))
 		msg_exit_free("parsing light infos\n", 1, vars);
+  vars->lights[index] = vars->parse.light;
 }

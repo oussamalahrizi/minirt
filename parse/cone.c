@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cylender.c                                         :+:      :+:    :+:   */
+/*   cone.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: idelfag < idelfag@student.1337.ma>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/29 13:15:30 by idelfag           #+#    #+#             */
-/*   Updated: 2024/01/01 18:19:46 by idelfag          ###   ########.fr       */
+/*   Created: 2024/01/01 22:46:24 by idelfag           #+#    #+#             */
+/*   Updated: 2024/01/01 22:51:37 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parse.h"
+# include "parse.h"
 
-int	check_cylender(t_object *obj)
+int	check_cone(t_object *obj)
 {
 	if ((obj->d_normal.x < -1.0f) || (obj->d_normal.x > 1.0f))
 		return (0);
@@ -29,23 +29,23 @@ int	check_cylender(t_object *obj)
 	return (1);
 }
 
-void	cylender_position(char **line, t_vars *vars, int *index, int *i)
+void	cone_position(char **line, t_vars *vars, int *index, int *i)
 {
 	int	j;
 
 	j = 0;
-	vars->parse.obj[*index].type = CYLINDER;
+	vars->parse.obj[*index].type = CONE;
 	vars->parse.obj[*index].translation.x = parse_number(line[*i], &j, vars);
 	skip_char(line[*i], ',', &j, vars);
 	vars->parse.obj[*index].translation.y = parse_number(line[*i], &j, vars);
 	skip_char(line[*i], ',', &j, vars);
 	vars->parse.obj[*index].translation.z = parse_number(line[*i], &j, vars);
 	if (line[*i][j])
-		msg_exit_free("parsing cylender infos\n", 1, vars);
+		msg_exit_free("parsing cone infos\n", 1, vars);
 	(*i)++;
 }
 
-void	cylender_dnormal(char **line, t_vars *vars, int *index, int *i)
+void	cone_dnormal(char **line, t_vars *vars, int *index, int *i)
 {
 	int	j;
 
@@ -56,11 +56,11 @@ void	cylender_dnormal(char **line, t_vars *vars, int *index, int *i)
 	skip_char(line[*i], ',', &j, vars);
 	vars->parse.obj[*index].d_normal.z = parse_number(line[*i], &j, vars);
 	if (line[*i][j])
-		msg_exit_free("parsing cylender infos\n", 1, vars);
+		msg_exit_free("parsing cone infos\n", 1, vars);
 	(*i)++;
 }
 
-void	cylender_scale_color(char **line, t_vars *vars, int *index, int *i)
+void	cone_scale_color(char **line, t_vars *vars, int *index, int *i)
 {
 	int	j;
 
@@ -72,7 +72,7 @@ void	cylender_scale_color(char **line, t_vars *vars, int *index, int *i)
 	j = 0;
 	vars->parse.obj[*index].scale.z = parse_number(line[*i], &j, vars);
 	if (line[*i][j])
-		msg_exit_free("parsing cylender infos\n", 1, vars);
+		msg_exit_free("parsing cone infos\n", 1, vars);
 	(*i)++;
 	j = 0;
 	vars->parse.obj[*index].base_color.x = parse_number(line[*i], &j, vars);
@@ -84,21 +84,21 @@ void	cylender_scale_color(char **line, t_vars *vars, int *index, int *i)
 	vars->parse.obj[*index].base_color.y /= 255.f;
 	vars->parse.obj[*index].base_color.z /= 255.f;
 	if (line[*i][j])
-		msg_exit_free("parsing cylender infos\n", 1, vars);
+		msg_exit_free("parsing cone infos\n", 1, vars);
   (*i)++;
 }
 
-void	parse_cylender(char **line, t_vars *vars, int *index)
+void	parse_cone(char **line, t_vars *vars, int *index)
 {
 	int	i;
 
 	i = 1;
 	if (!(ft_tablen(line) >= 6 && ft_tablen(line) <= 15))
-		msg_exit_free("parsing cylender infos\n", 1, vars);
-	cylender_position(line, vars, index, &i);
-	cylender_dnormal(line, vars, index, &i);
-	cylender_scale_color(line, vars, index, &i);
-	while(line[i])
+		msg_exit_free("parsing cone infos\n", 1, vars);
+	cone_position(line, vars, index, &i);
+	cone_dnormal(line, vars, index, &i);
+	cone_scale_color(line, vars, index, &i);
+  while(line[i])
 	{
 		if (line[i][0] == 'r' || line[i][0] == 's')
 			parse_reflectivity(line, vars, index, &i);
@@ -106,14 +106,14 @@ void	parse_cylender(char **line, t_vars *vars, int *index)
 			parse_texture(line, vars, index, &i);
 		else if (line[i][0] == 'b')
 			parse_bump(line, vars, index, &i);
-	  else
+		else
     {
-      printf("%s\n", line[i]);
+      printf("%c\n", line[i][0]);
 			msg_exit_free("Unknown key\n", 1, vars);
     }
 		i++;
 	}
-	if (!check_cylender(&(vars->parse.obj[*index])))
-		msg_exit_free("parsing cylender infos\n", 1, vars);
+	if (!check_cone(&(vars->parse.obj[*index])))
+		msg_exit_free("parsing cone infos\n", 1, vars);
 	(*index)++;
 }

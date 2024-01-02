@@ -1,7 +1,7 @@
 #include "../header.h"
 
 
-static int cast_ray(t_ray *lightray, t_object *objects, float lighdist, t_info *info)
+static int cast_ray(t_ray *lightray, t_vars *vars, float lighdist, t_info *info)
 {
 	int i;
 	int validint;
@@ -10,15 +10,15 @@ static int cast_ray(t_ray *lightray, t_object *objects, float lighdist, t_info *
 
 	i = 0;
 	validint = 0;
-	while (i < OBJ_COUNT)
+	while (i < vars->obj_count)
 	{
-		if (info->e == &objects[i])
+		if (info->e == &vars->objects[i])
 		{
 			i++;
 			continue;
 		}
-		test.e = &objects[i];
-		validint = objects[i].intersect(lightray, &test);
+		test.e = &vars->objects[i];
+		validint = vars->objects[i].intersect(lightray, &test);
 		if (validint)
 		{
 			dist = length(vec_sub(test.hitpoint, info->hitpoint));
@@ -32,7 +32,7 @@ static int cast_ray(t_ray *lightray, t_object *objects, float lighdist, t_info *
 	return (validint);
 }
 
-int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float *intensity)
+int compute_illimunation(t_light *light, t_info *info, t_vars *vars, float *intensity)
 {
 	t_vec3 lighdir;
 	t_ray lightray;
@@ -42,7 +42,7 @@ int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float 
 	lighdir = normalized(vec_sub(light->position, info->hitpoint));
 	lighdist = length(vec_sub(light->position, info->hitpoint));
 	lightray = new_ray(info->hitpoint, vec_add(info->hitpoint, lighdir));
-	validint = cast_ray(&lightray, obejcts, lighdist, info);
+	validint = cast_ray(&lightray, vars, lighdist, info);
 	if (!validint)
 	{
 		*intensity = light->intensity * fmax(dot_product(lighdir, info->localnormal), 0.0);
@@ -56,7 +56,7 @@ int compute_illimunation(t_light *light, t_info *info, t_object *obejcts, float 
 	return (0);
 }
 
-t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 base_color)
+t_vec3 diffuse_color(t_vars *vars, t_info *info, t_vec3 base_color)
 {
 	int i;
 	float red;
@@ -78,13 +78,13 @@ t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 ba
 	intensity = 0;
 	while (i < 1)
 	{
-		validillum = compute_illimunation(&lights[i], info, objects, &intensity);
+		validillum = compute_illimunation(&vars->lights[i], info, vars, &intensity);
 		if (validillum)
 		{
 			illumfound = 1;
-			red += lights[i].color.x * intensity;
-			green += lights[i].color.y * intensity;
-			blue += lights[i].color.z * intensity;
+			red += vars->lights[i].color.x * intensity;
+			green += vars->lights[i].color.y * intensity;
+			blue += vars->lights[i].color.z * intensity;
 		}
 		i++;
 	}

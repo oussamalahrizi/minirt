@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_type.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: idelfag < idelfag@student.1337.ma>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 23:05:59 by idelfag           #+#    #+#             */
-/*   Updated: 2024/01/01 15:31:48 by idelfag          ###   ########.fr       */
+/*   Updated: 2024/01/01 22:49:25 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,9 @@ int check_if_valid(char **lines, char c, int min, int max)
 			count++;
 		i++;
 	}
-	if (max != -1)
-		if (count >= min && count <= max)
+	if (max != -1 && count >= min && count <= max)
 			return(1);
-	else
-		if (count >= min)
+  else if (count >= min)
 			return(1);
 	return(0);
 }
@@ -44,14 +42,19 @@ void	parse_line(t_vars *vars, int *index)
 		parse_camera(vars->line, vars);
 	else if (!ft_strcmp(vars->line[0], "A"))
 		parse_ambient(vars->line, vars);
-	else if (!ft_strcmp(vars->line[0], "L"))
-		parse_light(vars->line, vars);
 	else if (!ft_strcmp(vars->line[0], "sp"))
 		parse_sphere(vars->line, vars, index);
 	else if (!ft_strcmp(vars->line[0], "pl"))
 		parse_plane(vars->line, vars, index);
 	else if (!ft_strcmp(vars->line[0], "cy"))
 		parse_cylender(vars->line, vars, index);
+	else if (!ft_strcmp(vars->line[0], "co"))
+		parse_cone(vars->line, vars, index);
+  else if (!ft_strcmp(vars->line[0], "L"))
+  {
+    free_tab(vars->line);
+    return ;
+  }
 	else
 		msg_exit_free("bad configuration file\n", 1, vars);
 	free_tab(vars->line);
@@ -74,12 +77,49 @@ int	count_objs(char **line)
 			count++;
 		if (!ft_strcmp(res[0], "pl"))
 			count++;
+    if (!ft_strcmp(res[0], "co"))
+        count++;
+		free_tab(res);
+    i++;
+  }
+  return count;
+}
+
+int	count_lights(char **line)
+{
+	int		i;
+	int		count;
+	char	**res;
+
+	i = 0;
+	count = 0;
+	while (line[i])
+	{
+		res = ft_split_two(line[i], "\t\n\v\f\r ");
+		if (!ft_strcmp(res[0], "L"))
+			count++;
 		free_tab(res);
 		i++;
 	}
 	return (count);
 }
 
+void fill_lights(t_vars *vars)
+{
+  int i = 0;
+  int j = 0;
+  while (vars->lines[i])
+  {
+    vars->line = ft_split_two(vars->lines[i], "\t\n\v\f\r ");
+    if (!ft_strcmp(vars->line[0], "L"))
+    {
+       parse_light(vars->line, vars, j);
+       j++;
+    }
+    free_tab(vars->line);
+    i++;
+  }
+} 
 void	get_content(t_vars *vars)
 {
 	int		i;
@@ -95,6 +135,11 @@ void	get_content(t_vars *vars)
 		free_tab(vars->lines);
 		message_exit("bad config file\n", 1);
 	}
+  int l_count = count_lights(vars->lines);
+  vars->lights = malloc(sizeof(t_light) * (l_count));
+  vars->parse.obj = NULL;
+  fill_lights(vars);
+  i = 0;
 	vars->obj_count = count_objs(vars->lines);
 	vars->parse.obj = malloc(sizeof(t_object) * (vars->obj_count + 1));
 	while (vars->lines[i])
@@ -104,5 +149,6 @@ void	get_content(t_vars *vars)
 			parse_line(vars, &index);
 		i++;
 	}
+  printf("%s\n", vars->parse.obj[1].bump_path);
 	free_tab(vars->lines);
 }

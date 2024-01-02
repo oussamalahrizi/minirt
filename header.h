@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <stdint.h>
 #include <time.h>
+#include "parse/parse.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -22,127 +23,11 @@
 # define OBJ_COUNT 7
 
 
-enum
-{
-	SPHERE,
-	PLANE,
-	CYLINDER,
-	CONE
-};
+
 
 #define EPSILON 1e-21f
 
-typedef struct s_vec3
-{
-	float x;
-	float y;
-	float z;
-} t_vec3;
 
-typedef struct s_vec2
-{
-	float u;
-	float v;
-}	t_vec2;
-
-typedef struct s_image
-{
-	float **red;
-	float **green;
-	float **blue;
-}	t_image;
-
-typedef struct s_light
-{
-	t_vec3 position;
-	t_vec3 color;
-	float intensity;
-}	t_light;
-
-typedef struct s_camera
-{
-	t_vec3 origin;
-	t_vec3 lookat;
-	t_vec3 up_vector;
-	t_vec3 cam_w;
-	t_vec3 cam_u;
-	t_vec3 cam_v;
-	t_vec3 screen_center;
-	t_vec3 screen_u;
-	t_vec3 screen_v;
-	float aspect_ratio;
-	float focal_length;
-	float hor_size;
-	int fov;
-} t_camera;
-
-typedef struct s_ray
-{
-	t_vec3 point1;
-	t_vec3 point2;
-	t_vec3 dir;
-} t_ray;
-
-typedef struct s_matrix
-{
-	int rows;
-	int cols;
-	float **matrix;
-} t_matrix;
-
-typedef struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-	int width;
-	int height;
-}	t_data;
-
-typedef struct s_info
-{
-	struct s_object *e;
-	t_vec3 hitpoint;
-	t_vec3 localnormal;
-	t_vec2 uv;
-	t_vec3 tangent;
-}	t_info;
-
-typedef struct s_object
-{
-	int type;
-	t_vec3 base_color;
-	t_vec3 translation;
-	t_vec3 rotation;
-	t_vec3 scale;
-	t_vec3 d_normal;
-	t_matrix **gtfm;
-	t_matrix *checker_matrix;
-	t_vec2 c_scale;
-	float radius;
-	float shininess;
-	float reflectivity;
-	int has_texture;
-	int has_material;
-	int has_bump;
-	t_data image;
-	t_data imgnormal;
-	int  (*intersect)(t_ray*, struct s_info *);
-}	t_object;
-
-typedef struct s_vars
-{
-	void *mlx_ptr;
-	void *win_ptr;
-	t_image *image;
-	t_light *lights;
-	t_object *objects;
-	t_camera cam;
-	t_vec3 *buffer;
-	int frame;
-	unsigned int rng_state;
-}	t_vars;
 
 enum KEYCODES
 {
@@ -157,7 +42,7 @@ enum KEYCODES
 
 
 
-
+void	prepare_objects(t_vars *vars);
 // vectors
 float square(float x);
 float length(t_vec3 a);
@@ -215,12 +100,12 @@ void set_pixel(int x, int y, t_vec3 *color, t_image *image);
 void raytrace(t_vars *vars);
 t_light *init_light();
 t_object *init_objects(t_vars *vars);
-t_vec3 diffuse_color(t_object *objects, t_info *info, t_light *lights, t_vec3 base_color);
+t_vec3 diffuse_color(t_vars *vars, t_info *info, t_vec3 base_color);
 int calculate_props(int min_index, t_vec3 *poi, t_info *info, t_vec3 *vhat);
 int test_cylinder(t_ray *ray, t_info *info);
 int test_cone(t_ray *ray, t_info *info);
 int calculate_cone_props(int min_index, t_vec3 *poi, t_info *info, t_vec3 *vhat);
-t_vec3 specular_highlight(t_object *objects, t_info *info, t_light *lights, t_ray *camera_ray);
+t_vec3 specular_highlight(t_vars *vars, t_info *info, t_ray *camera_ray);
 t_vec3 compute_color(t_vars *vars, t_info *info, t_ray *camera_ray, int ref_count);
 t_vec3 reflection_color(t_vars *vars, t_info *info, t_ray *incident_ray, int ref_count);
 t_matrix *set_transform_checker(t_vec2 *scale);

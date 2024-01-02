@@ -12,7 +12,7 @@
 
 #include "../header.h"
 
-static int cast_ray(t_ray *ray, t_object *objects, t_info *test, t_object *skip)
+static int cast_ray(t_ray *ray, t_vars *vars, t_info *test, t_object *skip)
 {
 	int i;
 	int validint;
@@ -24,15 +24,15 @@ static int cast_ray(t_ray *ray, t_object *objects, t_info *test, t_object *skip)
 	i = 0;
 	intfound = 0;
 	mindist = 10e6;
-	while (i < OBJ_COUNT)
+	while (i < vars->obj_count)
 	{
-		if (skip == &objects[i])
+		if (skip == &vars->objects[i])
 		{
 			i++;
 			continue;
 		}
-		other.e = &objects[i];
-		validint = objects[i].intersect(ray, &other);
+		other.e = &vars->objects[i];
+		validint = vars->objects[i].intersect(ray, &other);
 		if (validint)
 		{
 			intfound = 1;
@@ -63,7 +63,7 @@ t_vec3 reflection_color(t_vars *vars, t_info *info, t_ray *incident_ray, int ref
 	ref_color = new_vector(0, 0, 0);
 	ref_v = reflect(normalized(incident_ray->dir), normalized(info->localnormal));
 	ray = new_ray(info->hitpoint, vec_add(info->hitpoint, ref_v));
-	validint = cast_ray(&ray, vars->objects, &test, info->e);
+	validint = cast_ray(&ray, vars, &test, info->e);
 	if (validint && ref_count < MAX_REF)
 	{
 		ref_count++;

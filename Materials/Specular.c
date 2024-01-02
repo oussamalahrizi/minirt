@@ -12,13 +12,13 @@
 
 #include "../header.h"
 
-static int cast_ray(t_object *objects, t_ray cast_ray)
+static int cast_ray(t_object *objects, t_ray cast_ray, int count)
 {
 	t_info test;
 	int i;
 	int validint;
 	i = 0;
-	while (i < OBJ_COUNT)
+	while (i < count)
 	{
 		test.e = &objects[i];
 		validint = objects[i].intersect(&cast_ray, &test);
@@ -43,7 +43,7 @@ float get_intensity(t_vec3 light_ray_dir, t_vec3 normal, t_vec3 cam_dir, t_objec
 	return (0);
 }
 
-t_vec3 specular_highlight(t_object *objects, t_info *info, t_light *lights, t_ray *camera_ray)
+t_vec3 specular_highlight(t_vars *vars, t_info *info, t_ray *camera_ray)
 {
 	t_vec3 spc_color;
 	float red;	
@@ -64,16 +64,16 @@ t_vec3 specular_highlight(t_object *objects, t_info *info, t_light *lights, t_ra
 	intensity = 0.0f;
 	while (j < 1)
 	{
-		lighdir = normalized(vec_sub(lights[j].position, info->hitpoint));
+		lighdir = normalized(vec_sub(vars->lights[j].position, info->hitpoint));
 		start = vec_add(info->hitpoint, scale_vector(lighdir, 0.0001f));
 		point2 = vec_add(start, lighdir);
 		lightray = new_ray(start, point2);
-		validint = cast_ray(objects, lightray);
+		validint = cast_ray(vars->objects, lightray, vars->obj_count);
 		if (!validint)
 			intensity = get_intensity(lightray.dir, info->localnormal, camera_ray->dir, info->e);
-		red += lights[j].color.x * intensity * lights[j].intensity;
-		green += lights[j].color.y * intensity * lights[j].intensity;
-		blue += lights[j].color.z * intensity * lights[j].intensity;
+		red += vars->lights[j].color.x * intensity * vars->lights[j].intensity;
+		green += vars->lights[j].color.y * intensity * vars->lights[j].intensity;
+		blue += vars->lights[j].color.z * intensity * vars->lights[j].intensity;
 		j++;
 	};
 	spc_color = new_vector(red, green, blue);

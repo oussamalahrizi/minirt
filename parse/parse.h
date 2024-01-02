@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: idelfag < idelfag@student.1337.ma>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 23:05:53 by idelfag           #+#    #+#             */
-/*   Updated: 2024/01/01 18:09:36 by idelfag          ###   ########.fr       */
+/*   Updated: 2024/01/01 22:49:43 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "libft/libft.h"
 # include <math.h>
 # include <fcntl.h>
-
 enum
 {
 	SPHERE,
@@ -66,6 +65,8 @@ typedef struct	s_data
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+  int width;
+  int height;
 }	t_data;
 
 typedef struct s_camera
@@ -91,6 +92,7 @@ typedef struct s_info
 	t_vec3			hitpoint;
 	t_vec3			localnormal;
 	t_vec2			uv;
+  t_vec3      tangent;
 }				t_info;
 
 typedef struct s_ray
@@ -116,8 +118,8 @@ typedef struct s_object
 	int			has_material;
 	t_matrix	*checker_matrix;
 	t_vec2		c_scale;
-	t_data		*image;
-	t_data		*imgnormal;
+	t_data		image;
+	t_data		imgnormal;
 	int			(*intersect)(t_ray*, struct s_info *);
 	int			texture_type;
 	char		*texture_path;
@@ -173,10 +175,11 @@ void	skip_char(char *line, char c, int *index, t_vars *vars);
 void	get_content(t_vars *vars);
 void	parse_camera(char **line, t_vars *vars);
 void	parse_ambient(char **line, t_vars *vars);
-void	parse_light(char **line, t_vars *vars);
+void	parse_light(char **line, t_vars *vars, int index);
 void	parse_sphere(char **line, t_vars *vars, int *index);
 void	parse_plane(char **line, t_vars *vars, int *index);
 void	parse_cylender(char **line, t_vars *vars, int *index);
+void	parse_cone(char **line, t_vars *vars, int *index);
 t_vec3	normalized(t_vec3 a);
 int		ft_strcmp(char *s1, char *s2);
 void	parse(int ac, char **av, t_vars *vars);
@@ -184,5 +187,6 @@ void	msg_exit_free(char *msg, int n, t_vars *vars);
 void	parse_reflectivity(char **line, t_vars *vars, int *index, int *i);
 void	parse_texture(char **line, t_vars *vars, int *index, int *i);
 void	parse_bump(char **line, t_vars *vars, int *index, int *i);
+void	parse(int ac, char **av, t_vars *vars);
 
 #endif

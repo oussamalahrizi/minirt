@@ -1,27 +1,6 @@
 #include "header.h"
 
-float length2(t_vec3 a)
-{
-	return (pow(a.x, 2) + pow(a.y, 2) + pow(a.z, 2));
-}
 
-float length(t_vec3 a)
-{
-	return (sqrtf(length2(a)));
-}
-
-
-t_vec3 normalized(t_vec3 a)
-{
-	t_vec3 new;
-	float l;
-
-	copy_vec_values(&new, &a);
-	l = length(new);
-	if (l != 0)
-		new = scale_vector(new, 1.0f / l);
-	return (new);
-}
 
 float dot_product(t_vec3 a, t_vec3 b)
 {
@@ -38,10 +17,7 @@ t_vec3 cross(t_vec3 a, t_vec3 b)
 	return (new);
 }
 
-t_vec3 scale_vector(t_vec3 a, float t)
-{
-	return ( (t_vec3) {a.x * t, a.y * t, a.z * t} );
-}
+
 
 t_vec3 vec_sub(t_vec3 a, t_vec3 b)
 {

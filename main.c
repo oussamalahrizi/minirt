@@ -3,19 +3,34 @@
 
 
 
-void free_objects(t_object *objects)
+void free_objects(t_object *objects, t_vars *vars)
 {
 	int i;
 
 	i = 0;
 	while (i < OBJ_COUNT)
 	{
-		if (objects[i].type == SPHERE)
+		if (objects[i].type == SPHERE || objects[i].type == CYLINDER
+        || objects[i].type == CONE)
 		{
 			delete_matrix(objects[i].gtfm[0]);
 			delete_matrix(objects[i].gtfm[1]);
 			free(objects[i].gtfm);
 		}
+    if (objects[i].has_texture == 2)
+    {
+      mlx_destroy_image(vars->mlx_ptr, objects[i].image.img);
+      free(objects[i].texture_path);
+    }
+    if (objects[i].has_bump == 1)
+    {
+      free(objects[i].bump_path);
+      mlx_destroy_image(vars->mlx_ptr, objects[i].imgnormal.img);
+    }
+    if (objects[i].has_texture == 1)
+    {
+      free(objects[i].checker_matrix);
+    }
 		i++;
 	}
 	free(objects);
@@ -41,7 +56,7 @@ void free_image(t_image *image)
 
 int handle_exit(t_vars *vars)
 {
-	free_objects(vars->objects);
+	free_objects(vars->objects, vars);
 	free(vars->lights);
 	free_image(vars->image);
 	mlx_destroy_window(vars->mlx_ptr, vars->win_ptr);
@@ -60,25 +75,25 @@ int key_hook(int keycode, t_vars *vars)
 
 int loop(t_vars *vars)
 {
-	if (vars->frame == 120)
+	if (vars->frames == 120)
 		return (0);
  	raytrace(vars);
 	render(vars->image, vars->mlx_ptr, vars->win_ptr);
 	return (0);
 }
 
-int main(void)
+int main(int ac, char **av)
 {
 	t_vars vars;
 
+  parse(ac, av, &vars);
 	vars.mlx_ptr = mlx_init();
 	vars.win_ptr = mlx_new_window(vars.mlx_ptr, WIDTH, HEIGHT, "Raytracing goes prr");
 	init_camera(&vars.cam);
+  prepare_objects(&vars);
 	vars.image = new_image();
-	vars.lights = init_light();
-	vars.objects = init_objects(&vars);
 	vars.buffer = calloc(HEIGHT * WIDTH, sizeof(t_vec3));
-	vars.frame = 0;
+	vars.frames = 0;
 	vars.rng_state = 0;
 	mlx_loop_hook(vars.mlx_ptr, loop, &vars);
 	// raytrace(&vars);

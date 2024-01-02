@@ -76,6 +76,7 @@ void	plane_basecolor(char **line, t_vars *vars, int *index, int *i)
 	vars->parse.obj[*index].base_color.z /= 255.f;
 	if (line[*i][j])
 		msg_exit_free("Error\nparsing plane infos\n", 1, vars);
+  (*i)++;
 }
 
 void	parse_plane(char **line, t_vars *vars, int *index)
@@ -90,14 +91,17 @@ void	parse_plane(char **line, t_vars *vars, int *index)
 	plane_basecolor(line, vars, index, &i);
 	while(line[i])
 	{
-		if (line[i] == 'r' || line[i] == 'r')
+		if (line[i][0] == 'r' || line[i][0] == 's')
 			parse_reflectivity(line, vars, index, &i);
-		else if (line[i] == 't')
+		else if (line[i][0] == 't')
 			parse_texture(line, vars, index, &i);
-		else if (line[i] == 'b')
+		else if (line[i][0] == 'b')
 			parse_bump(line, vars, index, &i);
-		else
+    else
+    {
+      printf("%s\n", line[i]);
 			msg_exit_free("Unknown key\n", 1, vars);
+    }
 		i++;
 	}
 	if (!check_plane(&(vars->parse.obj[*index])))

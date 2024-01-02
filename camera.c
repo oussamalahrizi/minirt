@@ -3,21 +3,17 @@
 
 void init_camera(t_camera *cam)
 {
-	cam->origin = (t_vec3) {0, -3, -1};
-	cam->lookat = (t_vec3) {0, 0, 0};
-	cam->up_vector = (t_vec3) {0, 0, 1};
+  float rad_fov;
 
+	cam->up_vector = (t_vec3) {0, 0, 1};
 	cam->aspect_ratio = (float) WIDTH / (float) HEIGHT;
-	cam->fov = 30;
-	float rad_fov = cam->fov * M_PI / 180.0;
+	rad_fov = cam->fov * M_PI / 180.0;
 	cam->focal_length = 1.0;
 	cam->hor_size = 2.0 * cam->focal_length * tan(rad_fov / 2.0);
 	cam->cam_w = normalized(vec_sub(cam->lookat, cam->origin));
 	cam->cam_u = normalized(cross(cam->cam_w, cam->up_vector));
 	cam->cam_v = normalized(cross(cam->cam_u, cam->cam_w));
-
 	cam->screen_center = vec_add(cam->origin, scale_vector(cam->cam_w, cam->focal_length));
-
 	cam->screen_u = scale_vector(cam->cam_u, cam->hor_size);
 	cam->screen_v = scale_vector(cam->cam_v, cam->hor_size / cam->aspect_ratio);
 }

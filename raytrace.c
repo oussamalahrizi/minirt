@@ -1,7 +1,7 @@
 #include "header.h"
 
 
-int test_intersection(t_object *objects, t_ray *ray, t_info *info)
+int test_intersection(t_object *objects, t_ray *ray, t_info *info, int count)
 {
 	int i;
 	float dist;
@@ -14,7 +14,7 @@ int test_intersection(t_object *objects, t_ray *ray, t_info *info)
 	mindist = 1e6;
 	intfound = 0;
 	validint = 0;
-	while (i < OBJ_COUNT)
+	while (i < count)
 	{
 		test.e = &objects[i];
 		validint = objects[i].intersect(ray, &test);
@@ -73,8 +73,8 @@ void raytrace(t_vars *vars)
 	float normy;
 	t_info info;
 	t_vec3 color;
-	vars->frame++;
-	vars->rng_state = vars->frame;
+	vars->frames++;
+	vars->rng_state = vars->frames;
 	y = 0;
 	xfact = 1.0 / ((float)(WIDTH) / 2.0);
 	yfact = 1.0 / ((float)(HEIGHT) / 2.0);
@@ -89,12 +89,12 @@ void raytrace(t_vars *vars)
 			normx = ((float)(x + xOffset )* xfact) - 1.0;
 			normy = ((float)(y + yOffset )* yfact) - 1.0;
 			ray = generate_ray(normx, normy, &vars->cam);
-			intfound = test_intersection(vars->objects, &ray, &info);
+			intfound = test_intersection(vars->objects, &ray, &info, vars->obj_count);
 			if (intfound)
 			{
 				color = compute_color(vars, &info, &ray, 0);
 				vars->buffer[y * WIDTH + x] = vec_add(vars->buffer[y * WIDTH + x], color);
-				color = scale_vector(vars->buffer[y * WIDTH + x], 1.0 / vars->frame);
+				color = scale_vector(vars->buffer[y * WIDTH + x], 1.0 / vars->frames);
 				set_pixel(x, y, &color, vars->image);
 			}
 			
@@ -102,5 +102,5 @@ void raytrace(t_vars *vars)
 		}
 		y++;
 	}
-	printf("frame : %d\n", vars->frame);
+	printf("frame : %d\n", vars->frames);
 }

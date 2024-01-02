@@ -65,7 +65,6 @@ void	parse(int ac, char **av, t_vars *vars)
 		message_exit("Something gone wrong\n", 1);
 	get_content(vars);
 	vars->cam = vars->parse.cam;
-	vars->lights = &vars->parse.light;
 	vars->objects = vars->parse.obj;
 	close(fd);
 }

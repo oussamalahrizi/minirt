@@ -60,6 +60,8 @@ void	message_exit(char *msg, int n)
 
 void	msg_exit_free(char *msg, int n, t_vars *vars)
 {
+  if (vars->lights)
+      free(vars->lights);
 	if (vars->parse.obj)
 		free(vars->parse.obj);
 	free_tab(vars->lines);
