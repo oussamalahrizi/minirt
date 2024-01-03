@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/27 23:22:14 by aaitouna          #+#    #+#             */
-/*   Updated: 2023/11/15 04:01:53 by olahrizi         ###   ########.fr       */
+/*   Created: 2023/12/25 12:34:48 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/25 12:35:56 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "../minirt.h"
+#include "../header.h"
 
 void	set_to_indentity(t_matrix *mt)
 {
@@ -26,7 +25,9 @@ void	set_to_indentity(t_matrix *mt)
 		while (j < mt->cols)
 		{
 			if (i == j)
-				mt->matrix[i][j] = 1;
+				mt->matrix[i][j] = 1.0;
+			else
+				mt->matrix[i][j] = 0.0;
 			j++;
 		}
 		i++;
@@ -55,17 +56,6 @@ void	print_matrix(t_matrix *matrix)
 		i++;
 	}
 	printf("]\n");
-}
-
-t_matrix	*from_t_vectoro_matrix(t_vec3 vt)
-{
-	t_matrix	*new_mt;
-
-	new_mt = create_matrix(1, 3);
-	new_mt->matrix[0][0] = vt.x;
-	new_mt->matrix[0][1] = vt.y;
-	new_mt->matrix[0][2] = vt.z;
-	return (new_mt);
 }
 
 t_matrix	*transpose(t_matrix *mt)

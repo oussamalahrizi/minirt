@@ -1,43 +1,51 @@
-#include "minirt.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   camera.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/25 12:32:00 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 17:48:57 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void update_camera(t_camera *camera)
+#include "header.h"
+
+void	init_camera(t_camera *cam)
 {
-	// get the vector from the camera position to the camera look at
-	// this is the normal vector of the plan constructed by  the look at and the look up vectors
-	camera->alignement_vec = normalized(vec3_sub(camera->look_at, camera->position));
-	// calculate the u and v vectors
-	camera->u = normalized(cross(camera->alignement_vec, camera->camera_up));
-	camera->v = normalized(cross(camera->u, camera->alignement_vec));
-	// calculate the position of the center point of the screen
-	// still dont understand this
-	// camera screen center = camera position + (camera length * camera alignement vector) 
-	camera->alignement_vec = scale_vector(camera->alignement_vec, camera->camera_length);
-	camera->screen_center = vec3_add(camera->position, camera->alignement_vec);
-	// change the u and v vector to match the size and aspect ratio
-	// after calculating the u and v on our world coordinates we need to update
-	//them based on the parmeters given in the subject such as aspect ratio and
-	//the horizontal size (fov / 180)
-	camera->u = scale_vector(camera->u, camera->horizontal_size);
-	camera->v = scale_vector(camera->v, camera->horizontal_size / camera->aspectRatio);
+	float	rad_fov;
+
+	cam->up_vector = (t_vec3){0, 0, 1};
+	cam->aspect_ratio = (float) WIDTH / (float) HEIGHT;
+	rad_fov = cam->fov * M_PI / 180.0;
+	cam->focal_length = 1.0;
+	cam->hor_size = 2.0 * cam->focal_length * tanf(rad_fov / 2.0);
+	cam->cam_w = normalized(vec_sub(cam->lookat, cam->origin));
+	cam->cam_u = normalized(cross(cam->cam_w, cam->up_vector));
+	cam->cam_v = normalized(cross(cam->cam_u, cam->cam_w));
+	cam->screen_center = vec_add(cam->origin,
+			scale_vector(cam->cam_w, cam->focal_length));
+	cam->screen_u = scale_vector(cam->cam_u, cam->hor_size);
+	cam->screen_v = scale_vector(cam->cam_v, cam->hor_size / cam->aspect_ratio);
 }
 
-t_ray *generate_ray(double x, double y, t_camera *camera)
+t_ray	new_ray(t_vec3 point1, t_vec3 point2)
 {
-	// world_part1 = camera->screen_center + (camera->u * x)
-	t_vec3 *world_part1 = vec3_add(camera->screen_center, scale_vector(camera->u, x));
-	// screen_worldcoord = world_part1 + (camera->v * y)
-	t_vec3 *world_coord = vec3_add(world_part1, scale_vector(camera->v, y));
-	t_ray *ray = new_ray(camera->position, world_coord);
+	t_ray	ray;
+
+	ray.point1 = point1;
+	ray.point2 = point2;
+	ray.dir = normalized(vec_sub(point2, point1));
 	return (ray);
 }
 
-void initialize_camera(t_camera *camera)
+t_ray	generate_ray(float x, float y, t_camera *cam)
 {
-	camera->position = new_vector3(0, -2.0, -1.0);
-	camera->look_at = new_vector3(0, 0, 0);
-	camera->camera_up = new_vector3(0, 0, 1);
-	camera->camera_length = 1.0;
-	double rad_fov = FOV * M_PI / 180.0;
-	camera->horizontal_size = 2.0 * camera->camera_length * tan(rad_fov / 2.0); // fov ranges from 0 to 180, and the horizontal size can range from 0 to 1 
-	camera->aspectRatio = (double) WIDTH / (double) HEIGHT; // make sure the screen size matches the aspect ratio
+	t_vec3	part1;
+	t_vec3	part2;
+
+	part1 = vec_add(cam->screen_center, scale_vector(cam->screen_u, x));
+	part2 = vec_add(part1, scale_vector(cam->screen_v, y));
+	return (new_ray(cam->origin, part2));
 }

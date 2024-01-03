@@ -1,84 +1,64 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/20 23:06:24 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 22:05:41 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "minirt.h"
+#include "header.h"
 
-unsigned int rgbToInteger(t_vec3 *color)
+int	handle_exit(t_vars *vars)
 {
-	int red = color->x;
-	int green = color->y;
-	int blue = color->z;
-	unsigned int result = (red << 16) | (green << 8) | blue;
-	return result;
-}
-
-
-int mouse_hook(void **param)
-{
-	mlx_destroy_window(param[0], param[1]);
-	exit(1);
-}
-
-void *mlx_ptr;
-void *win_ptr;
-
-
-#include <time.h>
-
-int main(void)
-{
-	clock_t start_time = clock();
-	t_data img;
-	// t_scene	scene;
-	t_camera *camera;
-	t_image *image = new_image();
-
-	camera = malloc(sizeof(t_camera));
-	initialize_camera(camera);
-	update_camera(camera);
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "Raytracing goes prrrr");
-	img.img = mlx_new_image(mlx_ptr, WIDTH, HEIGHT);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-	t_light *light_list = init_light();
-
-	t_object objects[4];
-	init_objects(objects);
-	
-	double xFact = 1.0 / ((double)(WIDTH) / 2.0);
-	double yFact = 1.0 / ((double)(HEIGHT) / 2.0);
-	int x;
-	t_int_info info;
-	int y = 0;
-	t_vec3 *color;
-	while (y < HEIGHT)
-	{
-		printf("line : %d", y + 1);
-		printf("\r");
-		fflush(stdout);
-		x = 0;
-		while (x < WIDTH)
-		{
-			double normX = ((double)(x)* xFact) - 1.0;
-			double normY = ((double)(y)* yFact) - 1.0;
-			t_ray *ray = generate_ray(normX, normY, camera);
-			int intfound = test_intersection(ray, objects, &info);
-			if (intfound)
-			{
-				color = compute_color(objects, light_list, &info, ray, 0);
-				set_pixel(image, color, x, y);
-				free(color);
-			}
-			x++;
-		}
-		y++;
-	}
-	
-	render(image, mlx_ptr, win_ptr);
-	void **param = (void *[]) {mlx_ptr, win_ptr};
-	mlx_hook(win_ptr, 17, 0, mouse_hook, param);
-	clock_t end_time = clock();
-	double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
-	printf("Elapsed time : %f seconds.\n", elapsed_time);
-	mlx_loop(mlx_ptr);
+	free_objects(vars);
+	free_image(vars->image);
+    free(vars->lights);
+	mlx_destroy_window(vars->mlx_ptr, vars->win_ptr);
+	mlx_destroy_display(vars->mlx_ptr);
+	free(vars->buffer);
+	exit(0);
 	return (0);
 }
 
+int	key_hook(int keycode, t_vars *vars)
+{
+	if (keycode == KEYCODE_ESC)
+		handle_exit(vars);
+	return (0);
+}
+
+int	loop(t_vars *vars)
+{
+	if (vars->frames == 120)
+		return (0);
+	raytrace(vars);
+	render(vars->image, vars->mlx_ptr, vars->win_ptr);
+	return (0);
+}
+
+int	main(int ac, char **av)
+{
+	t_vars	vars;
+
+	parse(ac, av, &vars);
+	vars.mlx_ptr = mlx_init();
+	vars.win_ptr = mlx_new_window(vars.mlx_ptr,
+			WIDTH, HEIGHT, "miniRT");
+	vars.parse.ambient_light.rgb = scale_vector(vars.parse.ambient_light.rgb,
+			vars.parse.ambient_light.ambient_ratio);
+	prepare_objects(&vars);
+	init_camera(&vars.cam);
+	vars.image = new_image();
+	vars.buffer = ft_calloc(HEIGHT * WIDTH, sizeof(t_vec3));
+	vars.frames = 0;
+	vars.rng_state = 0;
+	mlx_loop_hook(vars.mlx_ptr, loop, &vars);
+	mlx_hook(vars.win_ptr, 2, 1L << 0, key_hook, &vars);
+	mlx_hook(vars.win_ptr, 17, 0, handle_exit, &vars);
+	mlx_loop(vars.mlx_ptr);
+	return (0);
+}

@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/12 22:13:24 by aaitouna          #+#    #+#             */
-/*   Updated: 2023/11/15 04:01:59 by olahrizi         ###   ########.fr       */
+/*   Created: 2023/12/25 12:34:50 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/25 12:34:51 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "../minirt.h"
+#include "../header.h"
 
 t_matrix	*mt_multiplication(t_matrix *mt1, t_matrix *mt2)
 {
