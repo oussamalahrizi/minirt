@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 23:34:30 by olahrizi          #+#    #+#             */
-/*   Updated: 2024/01/03 23:37:17 by olahrizi         ###   ########.fr       */
+/*   Updated: 2024/01/04 06:45:17 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,22 @@ unsigned int	rgb_to_int(float red, float green, float blue)
 	b = (blue) * 255.0;
 	value = (r << 16) | (g << 8) | b;
 	return (value);
+}
+
+void	free_image(t_image *image)
+{
+	int	i;
+
+	i = 0;
+	while (i < HEIGHT)
+	{
+		free(image->red[i]);
+		free(image->green[i]);
+		free(image->blue[i]);
+		i++;
+	}
+	free(image->red);
+	free(image->green);
+	free(image->blue);
+	free(image);
 }

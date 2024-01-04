@@ -57,6 +57,8 @@ SRCBONUS =	bonus/parse/tools.c 				\
 
 SRCBONUS +=	bonus/camera.c \
 			bonus/vectors.c \
+			bonus/vectors2.c \
+			bonus/vectors3.c \
 			bonus/Matrix/init.c \
 			bonus/Matrix/inverse.c \
 			bonus/Matrix/matrix.c \
@@ -80,8 +82,10 @@ SRCBONUS +=	bonus/camera.c \
 			bonus/Materials/Simple_material.c \
 			bonus/Materials/Reflection.c \
 			bonus/textures/checker.c \
+			bonus/textures/checker_setup.c \
 			bonus/textures/bump_map.c \
 			bonus/main_bonus.c \
+			bonus/random.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -115,7 +119,7 @@ clean:
 	@${RM} ${OBJS} ${OBJSBONUS}
 	@make clean -C libft >/dev/null
 
-bonus : ${BONUS} 
+bonus : ${BONUS}
 
 ${BONUS}: ${OBJSBONUS} $(LIBFT)
 	@${CC} ${CFLAGS} ${OBJSBONUS} ${LDFLAGS} -o ${BONUS}
@@ -123,6 +127,8 @@ ${BONUS}: ${OBJSBONUS} $(LIBFT)
 fclean: clean
 	@${RM} ${NAME} ${BONUS} libft/libft.a
 
-re:	fclean all bonus
+re:	fclean all
 
 .PHONY:	clean fclean all re
+
+

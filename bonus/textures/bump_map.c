@@ -6,78 +6,75 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 09:14:38 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/12/11 06:16:47 by olahrizi         ###   ########.fr       */
+/*   Updated: 2024/01/04 06:28:38 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "norm_text.h"
 
-int min(int x, int y)
+int	min(int x, int y)
 {
 	if (x < y)
 		return (x);
 	return (y);
 }
 
-t_vec3 bump_normal(t_info *info)
+static void	helper(t_bump *local)
 {
-	float h;
-	float hr;
-	float hu;
-	t_vec3 bump_normal;
-	t_vec3 bitangent;
-	float u, v;
-
-	u = info->uv.u;
-	v = info->uv.v;
-	if (info->e->type == PLANE)
-	{
-		u *= 0.5;
-		v *= 0.5;
-	}
-	h = get_color_texture(info->e->imgnormal, u, v).z;
-	hr = get_color_texture(info->e->imgnormal, u + 1.0f / info->e->imgnormal.width, v).z;
-	hu = get_color_texture(info->e->imgnormal, u, v + 1.0f / info->e->imgnormal.height).z;
-	info->tangent = normalized(info->tangent);
-	bitangent = normalized(cross(info->localnormal, info->tangent));
-	bump_normal = normalized(cross(
-		(t_vec3) {1, 0, (hr - h ) * 10},
-		(t_vec3) {0, 1, (hu - h) * 10}
-	));
-	t_matrix *tbn = create_matrix(3, 3);
-	float *values = (float []) {info->tangent.x, bitangent.x, info->localnormal.x,
-								info->tangent.y, bitangent.y, info->localnormal.y,
-								info->tangent.z, bitangent.z, info->localnormal.z};
-	fill_mt(tbn, values);
-	t_matrix *tempdata = create_matrix(3, 1);
-	values = (float []) {bump_normal.x, bump_normal.y, bump_normal.z};
-	fill_mt(tempdata, values);
-	t_matrix *result = safe_matrix_multy(tbn, tempdata);
-	t_vec3 output = normalized(new_vector(result->matrix[0][0], result->matrix[1][0], result->matrix[2][0]));
-	delete_matrix(result);
-	return(output);
+	local->tempdata = create_matrix(3, 1);
+	local->values = (float []){local->bump_normal.x, local->bump_normal.y,
+		local->bump_normal.z};
+	fill_mt(local->tempdata, local->values);
+	local->result = safe_matrix_multy(local->tbn, local->tempdata);
+	local->output = normalized(new_vector(local->result->matrix[0][0],
+				local->result->matrix[1][0], local->result->matrix[2][0]));
+	delete_matrix(local->result);
 }
 
-t_vec3 get_color_texture(t_data image, float u, float v)
+t_vec3	bump_normal(t_info *info)
 {
-	int width;
-	int height;
-	int x;
-	int y;
-	int pixel_index;
-	char *dst;
-	t_vec3 color;
-	unsigned int final;
+	t_bump	local;
 
-	width = image.width;
-	height = image.height;
+	local.u = info->uv.u;
+	local.v = info->uv.v;
+	if (info->e->type == PLANE)
+	{
+		local.u *= 0.5;
+		local.v *= 0.5;
+	}
+	local.h = get_color_texture(info->e->imgnormal, local.u, local.v).z;
+	local.hr = get_color_texture(info->e->imgnormal, local.u
+			+ 1.0f / info->e->imgnormal.width, local.v).z;
+	local.hu = get_color_texture(info->e->imgnormal,
+			local.u, local.v + 1.0f / info->e->imgnormal.height).z;
+	info->tangent = normalized(info->tangent);
+	local.bitangent = normalized(cross(info->localnormal, info->tangent));
+	local.bump_normal = normalized(cross((t_vec3){1, 0, (local.hr - local.h)
+				* 10}, (t_vec3){0, 1, (local.hu - local.h) * 10}));
+	local.tbn = create_matrix(3, 3);
+	local.values = (float [])
+	{info->tangent.x, local.bitangent.x, info->localnormal.x,
+		info->tangent.y, local.bitangent.y, info->localnormal.y,
+		info->tangent.z, local.bitangent.z, info->localnormal.z};
+	(fill_mt(local.tbn, local.values), helper(&local));
+	return (local.output);
+}
+
+t_vec3	get_color_texture(t_data image, float u, float v)
+{
+	t_text	local;
+
+	local.width = image.width;
+	local.height = image.height;
 	u -= floorf(u);
 	v -= floorf(v);
-	x = min((u * width), width - 1);
-	y = min((1 - v) * height, height - 1);
-	pixel_index = y * image.line_length + x * (image.bits_per_pixel / 8);
-	dst = image.addr + pixel_index;
-	final = *((unsigned int *) dst);
-	color = new_vector((final >> 16 & 255)  / 255.0f, (final >> 8 & 255) / 255.0f, (final & 255) / 255.0f);
-	return (color);	
+	local.x = min((u * local.width), local.width - 1);
+	local.y = min((1 - v) * local.height, local.height - 1);
+	local.pixel_index = local.y * image.line_length
+		+ local.x * (image.bits_per_pixel / 8);
+	local.dst = image.addr + local.pixel_index;
+	local.final = *((unsigned int *) local.dst);
+	local.color = new_vector((local.final >> 16 & 255) / 255.0f,
+			(local.final >> 8 & 255) / 255.0f, (local.final & 255) / 255.0f);
+	return (local.color);
 }

@@ -1,30 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   random.c                                           :+:      :+:    :+:   */
+/*   vectors2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/25 11:53:36 by olahrizi          #+#    #+#             */
-/*   Updated: 2024/01/04 05:33:21 by olahrizi         ###   ########.fr       */
+/*   Created: 2023/12/25 10:05:50 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/12/30 21:53:34 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-unsigned int	rand_pcg(unsigned int *rng_state)
+t_vec3	vec_sub(t_vec3 a, t_vec3 b)
 {
-	unsigned int		state;
-	unsigned int		word;
-
-	state = *rng_state;
-	*rng_state = state * 747796405u + 2891336453u;
-	word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-	return ((word >> 22u) ^ word);
+	return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z});
 }
 
-float	random_float(unsigned int *rng_state, float min, float max)
+t_vec3	vec_add(t_vec3 a, t_vec3 b)
 {
-	return (min + (rand_pcg(rng_state) * (1.0 / UINT_MAX)
-		) * (max - min));
+	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z});
+}
+
+t_vec3	new_vector(float x, float y, float z)
+{
+	return ((t_vec3){x, y, z});
+}
+
+void	copy_vec_values(t_vec3 *a, t_vec3 *b)
+{
+	a->x = b->x;
+	a->y = b->y;
+	a->z = b->z;
 }
