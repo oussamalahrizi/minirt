@@ -1,111 +1,128 @@
+NAME 	= minirt
 
+BONUS 	= minirt_bonus
 
+SRCS =	mandatory/parse/tools.c 				\
+		mandatory/parse/tools2.c 				\
+		mandatory/parse/tools3.c 				\
+		mandatory/parse/parse.c 				\
+		mandatory/parse/whitesplit.c 			\
+		mandatory/parse/camera.c 				\
+		mandatory/parse/light.c 				\
+		mandatory/parse/ambient_lightning.c 	\
+		mandatory/parse/get_type.c			\
+		mandatory/parse/cylender.c 			\
+		mandatory/parse/sphere.c				\
+		mandatory/parse/plane.c
 
+SRCS +=	mandatory/camera.c \
+		mandatory/vectors.c \
+		mandatory/vectors2.c \
+		mandatory/vectors3.c \
+		mandatory/Matrix/init.c \
+		mandatory/Matrix/inverse.c \
+		mandatory/Matrix/matrix.c \
+		mandatory/Matrix/Minor.c \
+		mandatory/Matrix/Multiplication.c \
+		mandatory/Transformation/Gtfm.c \
+		mandatory/Transformation/setup.c \
+		mandatory/image/image.c \
+		mandatory/image/image_utils.c \
+		mandatory/Normals.c \
+		mandatory/raytrace.c \
+		mandatory/Objects/Sphere.c \
+		mandatory/Objects/Plane.c \
+		mandatory/Objects/Cylinder.c \
+		mandatory/Objects/Cylinder_utils.c \
+		mandatory/Materials/Diffuse.c \
+		mandatory/free_utils.c \
+		mandatory/random.c \
+		mandatory/init_objects.c \
+		mandatory/main_mandatory.c
 
+SRCBONUS =	bonus/parse/tools.c 				\
+			bonus/parse/tools2.c 				\
+			bonus/parse/tools3.c 				\
+			bonus/parse/parse.c 				\
+			bonus/parse/whitesplit.c 			\
+			bonus/parse/camera.c 				\
+			bonus/parse/light.c 				\
+			bonus/parse/ambient_lightning.c 	\
+			bonus/parse/get_type.c				\
+			bonus/parse/cylender.c 				\
+			bonus/parse/sphere.c				\
+			bonus/parse/plane.c 				\
+			bonus/parse/cone.c					\
+			bonus/parse/bonus_tools.c 
 
-NAME = miniRT
+SRCBONUS +=	bonus/camera.c \
+			bonus/vectors.c \
+			bonus/Matrix/init.c \
+			bonus/Matrix/inverse.c \
+			bonus/Matrix/matrix.c \
+			bonus/Matrix/Minor.c \
+			bonus/Matrix/Multiplication.c \
+			bonus/Transformation/Gtfm.c \
+			bonus/Transformation/setup.c \
+			bonus/image/image.c \
+			bonus/image/image_utils.c \
+			bonus/Normals.c \
+			bonus/raytrace.c \
+			bonus/init_objects.c \
+			bonus/Objects/Sphere.c \
+			bonus/Objects/Plane.c \
+			bonus/Objects/Cylinder.c \
+			bonus/Objects/Cylinder_utils.c \
+			bonus/Objects/Cone.c \
+			bonus/Objects/Cone_utils.c \
+			bonus/Materials/Diffuse.c \
+			bonus/Materials/Specular.c \
+			bonus/Materials/Simple_material.c \
+			bonus/Materials/Reflection.c \
+			bonus/textures/checker.c \
+			bonus/textures/bump_map.c \
+			bonus/main_bonus.c \
+
+OBJS = ${SRCS:.c=.o}
+
+OBJSBONUS = ${SRCBONUS:.c=.o}
+
+%.o : %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
+
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast -g3 -fsanitize=address
-LDFLAGS = -L./libft -lft -lmlx -lXext -lX11 -lm -lz
 
 LIBFT = libft/libft.a
 
-BNAME = miniRT_bonus
+CFLAGS = -Wall -Wextra -Werror
 
-BSRCS =	parse_bonus/tools.c 				\
-		parse_bonus/tools2.c 				\
-		parse_bonus/tools3.c 				\
-		parse_bonus/parse.c 				\
-		parse_bonus/whitesplit.c 			\
-		parse_bonus/camera.c 				\
-		parse_bonus/light.c 				\
-		parse_bonus/ambient_lightning.c 	\
-		parse_bonus/get_type.c				\
-		parse_bonus/cylender.c 				\
-		parse_bonus/sphere.c				\
-		parse_bonus/plane.c \
-		parse_bonus/cone.c	\
-		parse_bonus/bonus_tools.c \
-		free_bonus.c
+LDFLAGS = -Llibft -lft -lmlx -lXext -lX11 -lm
 
+RM = rm -rf
 
-COMMON =	camera.c \
-			vectors.c \
-			vectors2.c \
-			vectors3.c \
-			Matrix/init.c \
-			Matrix/inverse.c \
-			Matrix/matrix.c \
-			Matrix/Minor.c \
-			Matrix/Multiplication.c \
-			Transformation/Gtfm.c \
-			Transformation/setup.c \
-			image/image.c \
-			image/image_utils.c \
-			Normals.c \
-			Objects/Sphere.c \
-			Objects/Plane.c \
-			Objects/Cylinder.c \
-			Objects/Cylinder_utils.c \
-			Materials/Diffuse.c \
-			random.c \
-			main.c
-
-BSRCS +=	Materials/Simple_material.c \
-			Materials/Specular.c \
-			Materials/Reflection.c \
-			textures/bump_map.c \
-			textures/checker.c \
-			Objects/Cone.c \
-			Objects/Cone_utils.c \
-			raytrace_bonus.c \
-			init_objects_bonus.c 
-
-SRCS = parse_mand/ambient_lightning.c \
-	   parse_mand/camera.c \
-	   parse_mand/cylender.c \
-	   parse_mand/get_type.c \
-	   parse_mand/light.c \
-	   parse_mand/parse.c \
-	   parse_mand/plane.c \
-	   parse_mand/sphere.c \
-	   parse_mand/tools.c \
-	   parse_mand/tools2.c \
-	   parse_mand/tools3.c \
-	   parse_mand/whitesplit.c \
-	   raytrace.c\
-	   free_utils.c\
-	   init_objects.c 
-
-OBJS = $(COMMON:.c=.o)
-OBJS += $(SRCS:.c=.o)
-
-BOBJS = $(COMMON:.c=.o)
-BOBJS += $(BSRCS:.c=.o)
-
-all : $(NAME)
+all : ${NAME}
 
 %.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@${CC} ${CFLAGS} -c $< -o $@
 
-$(NAME) : $(OBJS) ${LIBFT}
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
+${NAME}: ${OBJS} $(LIBFT)
+	@${CC} ${CFLAGS} ${OBJS} ${LDFLAGS} -o ${NAME}
 
 ${LIBFT}:
 	@make -C libft >/dev/null
 
-bonus : $(BNAME)
-
-$(BNAME) : $(NAME) $(BOBJS)
-	$(CC) $(CFLAGS) $(BOBJS) $(LDFLAGS) -o $(BNAME)
-
-clean :
-	@rm -rf $(OBJS) $(BOBJS)
+clean:
+	@${RM} ${OBJS} ${OBJSBONUS}
 	@make clean -C libft >/dev/null
 
-fclean : clean
-	@rm -rf $(NAME) libft/libft.a
+bonus : ${BONUS} 
 
-re : fclean all
+${BONUS}: ${OBJSBONUS} $(LIBFT)
+	@${CC} ${CFLAGS} ${OBJSBONUS} ${LDFLAGS} -o ${BONUS}
 
-.PHONY : clean fclean all re
+fclean: clean
+	@${RM} ${NAME} ${BONUS} libft/libft.a
+
+re:	fclean all bonus
+
+.PHONY:	clean fclean all re
